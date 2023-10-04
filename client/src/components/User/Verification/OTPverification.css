@@ -1,0 +1,36 @@
+.otp-verification-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.otp-verification-container input[type="text"] {
+    width: 88%;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.otp-verification-container button {
+    /* display: block; */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    background-color: #563517;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+
+    /* Adjust styles for screens up to 768px wide */
+    .otp-verification-container {
+        max-width: 300px;
+    }
+}

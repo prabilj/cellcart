@@ -1,0 +1,47 @@
+.email_container {
+    max-width: 400px;
+    margin: 50px auto;
+    /* Center the container horizontally */
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.email_form input {
+    width: 90%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+}
+
+.email_form button {
+    background-color: #563517;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 50%;
+    
+    transition: background-color 0.3s;
+    
+}
+
+.email_form button:hover {
+    background-color: #b48a62;
+}
+
+/* Style the link */
+.email_form p {
+    text-align: center;
+   
+}
+
+.email_form a {
+    color: #563517;
+    text-decoration: none;
+}

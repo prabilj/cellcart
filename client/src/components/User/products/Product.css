@@ -1,0 +1,10 @@
+.link-style {
+    text-decoration: none;
+    /* Remove underline */
+    color: inherit;
+    /* Inherit the text color */
+}
+
+.productContainer {
+    padding: 25px
+}

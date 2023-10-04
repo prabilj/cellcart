@@ -1,0 +1,47 @@
+/* src/components/AddProduct.css */
+
+.add-product-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-product-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.add-product-container form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.add-product-container form input[type="text"],
+.add-product-container form input[type="number"],
+.add-product-container form textarea,
+.add-product-container form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.add-product-container form button[type="submit"] {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.add-product-container form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
