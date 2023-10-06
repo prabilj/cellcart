@@ -6,7 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import './UserProfile.css';
 import { useNavigate } from 'react-router-dom';
-import { getUserApi } from '../Api/Api'
+import { getUserApi, updateUserApi } from '../Api/Api'
+import Swal from 'sweetalert2'
+
 
 
 
@@ -20,7 +22,6 @@ const validationSchema = yup.object().shape({
     .email('Invalid email format'),
   phoneNumber: yup
     .string()
-    .matches(/^\+\d{1,3}-\d{3}-\d{3}-\d{4}$/, 'Invalid phone number format')
     .required('Phone Number is required'),
 
 });
@@ -29,6 +30,7 @@ const validationSchema = yup.object().shape({
 const UserProfile = () => {
   const Navigate = useNavigate()
   const userId = localStorage.getItem('uId');
+  
 
   const [defaultData, setdefaultData] = useState({})
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -51,8 +53,21 @@ const UserProfile = () => {
   }, [userId])
 
   const onSubmit = (data) => {
-
-    console.log('Form data:', data);
+    const updateUserData = async () => {
+      console.log(data)
+      const response = await updateUserApi(data)
+      if (response.status === 201) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'User details updated successfully',
+        });
+        Navigate('/productlist')
+      }
+      console.log("response", response)
+      console.log('Form data:', data);
+    }
+    updateUserData();
   };
 
 
@@ -66,7 +81,7 @@ const UserProfile = () => {
           <Typography variant="h5">Edit Profile</Typography>
 
           <div className="profile-form">
-            {/* Input fields for user registration */}
+
             <div className='textname'>
               <div>
                 <input
@@ -135,6 +150,7 @@ const UserProfile = () => {
             <div style={{ marginTop: '16px' }}>
               <Button
                 variant="contained"
+                type='submit'
                 size='large'
                 style={{ backgroundColor: '#563517', color: 'white', }}
 

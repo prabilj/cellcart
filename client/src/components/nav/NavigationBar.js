@@ -11,8 +11,8 @@ import {
     responsiveFontSizes,
     useMediaQuery,
     Box,
-    Menu, // Import Menu component
-    MenuItem, // Import MenuItem component
+    Menu, 
+    MenuItem, 
     Avatar,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -20,6 +20,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonIcon from '@mui/icons-material/Person';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+
 
 const NavigationBar = () => {
     const name = localStorage.getItem("name")
@@ -48,15 +49,17 @@ const NavigationBar = () => {
     };
 
     const handleLogOut = () => {
+        const userToken = localStorage.getItem('userToken')
+
         axios
-            .post('http://localhost:3000/logout')
+            .post('http://localhost:3000/logout', { userToken })
             .then((response) => {
                 console.log(response);
             })
             .catch((error) => {
                 console.log(error);
             });
-        localStorage.clear('userToken', 'uId');
+        localStorage.removeItem('userToken', 'uId');
         window.location.href = '/login';
         console.log('user logout');
     };

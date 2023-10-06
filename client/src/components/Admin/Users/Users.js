@@ -1,42 +1,51 @@
-// Users.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { deleteUsersApi, displayUsersApi } from '../../Api/Api';
 import Avatar from '@mui/material/Avatar';
+import CircularProgress from '@mui/material/CircularProgress';
 import './Users.css';
 import Sidebar from '../Sidebar/Sidebar';
+import { Button } from '@mui/material';
 
 const Users = () => {
-  // Sample user data
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john@example.com',
-      avatar: 'url-to-john-avatar.jpg',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      avatar: 'url-to-jane-avatar.jpg',
-    },
-    // Add more user objects as needed
-  ]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Function to generate a random color based on user's ID
-  const getRandomColor = (id) => {
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await displayUsersApi();
+        const userData = response.data?.data?.data || [];
+        setUsers(userData);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const getRandomColor = (_id) => {
     const colors = [
-      "#FF5733", // Example colors, you can add more
+      "#FF5733",
       "#33FF57",
       "#5733FF",
     ];
-    const index = id % colors.length;
+    const index = _id % colors.length;
     return colors[index];
   };
 
-  // Function to delete a user by ID
-  const deleteUser = (id) => {
-    const updatedUsers = users.filter((user) => user.id !== id);
-    setUsers(updatedUsers);
+  const handleDeleteUser = async (userId) => {
+    try {
+      // Send a DELETE request to delete the user by their ID
+      //await deleteUsersApi(userId);
+
+    
+      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
   };
 
   return (
@@ -44,29 +53,46 @@ const Users = () => {
       <Sidebar />
       <div className="users-page">
         <h1>Users</h1>
-        <div className="user-list">
-          {users.map((user) => (
-            <div key={user.id} className="user-card">
-              <div className="avatar-container">
-                <Avatar
-                  sx={{
-                    width: 100,
-                    height: 100,
-                    fontSize: 36,
-                    backgroundColor: getRandomColor(user.id),
-                  }}
-                >
-                  {user.name[0]}
-                </Avatar>
-              </div>
-              <div className="user-info">
-                <h3>{user.name}</h3>
-                <p>{user.email}</p>
-              </div>
-              <button onClick={() => deleteUser(user.id)}>Delete</button>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <CircularProgress />
+        ) : users ? (
+          <div className="user-list">
+            {users.length > 0 ? (
+              users.map((user) => (
+                <div key={user._id} className="user-card">
+                  <div className="avatar-container">
+                    <Avatar
+                      className="user-avatar"
+                      style={{
+                        backgroundColor: getRandomColor(user._id),
+                      }}
+                    >
+                      {user.firstname[0]}
+                    </Avatar>
+                  </div>
+                  <div className="user-info">
+                    <h3 className="user-name">{user.firstname}</h3>
+                    <p className="user-email">{user.email}</p>
+                  </div>
+                  <div className="button-container">
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      className="delete-button"
+                      onClick={() => handleDeleteUser(user._id)} // Use onClick to trigger the delete action
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="no-users-message">No users found.</p>
+            )}
+          </div>
+        ) : (
+          <p className="error-message">Error fetching users.</p>
+        )}
       </div>
     </div>
   );

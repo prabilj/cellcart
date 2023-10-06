@@ -23,8 +23,10 @@ const upload = multer({ storage: storage });
 
 app.post('/signup', User.userSignUp)
 app.post('/login', User.userLogIn)
-app.get('/dislayuser', User.displayUser)
+app.get('/users', User.displayUser)
 app.get('/user/:_id', User.getUser)
+app.put('/user/:_id',User.updateUser)
+app.delete('/users/:_id',User.deleteUsers)
 app.post('/user/changepassword',User.changePassword)
 app.post("/user/resetPassword", User.resetPassword)
 app.post('/logout', User.userLogOut)

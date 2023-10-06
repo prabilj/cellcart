@@ -43,7 +43,7 @@ const ViewProducts = () => {
               <h3 className="product-name">{product.name}</h3>
               <p className="product-description">{product.description}</p>
               <p className="product-price">Price: ${product.price.toFixed(2)}</p>
-              <div className="button-container">
+              <div className="buttoncontainer">
                 <button className="update-button" onClick={() => updateProduct(product.id)}>Update</button>
                 <button className="delete-button" onClick={() => deleteProduct(product.id)}>Delete</button>
               </div>

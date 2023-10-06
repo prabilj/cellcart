@@ -57,3 +57,20 @@ export const getUserApi = async () => {
   //console.log(response.data.data.data)
   return response.data.data
 }
+
+export const updateUserApi = async (formData) => {
+  console.log("updateUserApi", formData)
+  const response = await axios.put(`${baseUrl}/user/${userId}`, formData)
+  return response
+}
+
+export const displayUsersApi = async () => {
+  console.log("userId", userId)
+  const response = await axios.get(`${baseUrl}/users`)
+  console.log("response", response.data)
+  return response
+}
+export const deleteUsersApi = async (userId) => {
+  const response = await axios.delete(`${baseUrl}/users/${userId}`)
+  return response
+}

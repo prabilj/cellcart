@@ -1,44 +1,82 @@
 /* Users.css */
+
+/* App */
 .app {
   display: flex;
 }
 
+/* Users Page */
 .users-page {
   flex: 1;
   padding: 20px;
 }
 
+.users-page h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* User List */
 .user-list {
   display: flex;
   flex-wrap: wrap;
 }
 
+/* User Card */
 .user-card {
-  width: calc(33.33% - 20px); /* 3 cards per row with some margin */
-  margin-right: 20px;
-  margin-bottom: 20px;
+  background-color: #f4f4f4;
   border: 1px solid #ddd;
-  padding: 10px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 20px;
+  margin: 10px;
+  /* flex-basis: calc(33.33% - 20px); Adjust this to change the number of columns */
+  box-sizing: border-box;
+  position: relative;
 }
 
+/* Avatar Container */
 .avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 10px;
 }
 
-button {
+/* User Info */
+.user-info h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.user-info p {
+  font-size: 14px;
+  color: #cac3c3;
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
+  justify-content: center;
   margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #FF5733;
+}
+
+/* Delete Button */
+.delete-button {
+  background-color: #f00;
   color: #fff;
   border: none;
+  padding: 5px 10px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #E54E2E;
+.delete-button:hover {
+  background-color: #d00;
+}
+
+/* Messages */
+.no-users-message,
+.error-message {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #777;
 }
