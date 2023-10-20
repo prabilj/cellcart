@@ -9,7 +9,7 @@ import './ResetPassword.css';
 
 function ResetPassword() {
     // Validation schema for password reset
-    const location = useLocation();
+    const location = useLocation();                                                    
     const navigate = useNavigate();
     const { email } = location.state || {};
     const Email = email;

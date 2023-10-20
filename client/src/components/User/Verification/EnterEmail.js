@@ -4,14 +4,14 @@ import './EnterEmail.css';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axios from 'axios'
+import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
 const EmailEntry = () => {
     const location = useLocation();
-    console.log("location", location)
-    const { status } = location.state || {}
-    console.log("status1", status)
+    //console.log("location", location);
+    const { status } = location.state || {};
+    console.log("status1", status);
     const schema = yup.object().shape({
         email: yup.string().email('Invalid email format').required('Email is required')
     });
@@ -29,25 +29,25 @@ const EmailEntry = () => {
     };
 
     const handleSendOTP = () => {
-        console.log(email)
-        axios.post('http://localhost:3000/sentemail', { email })
-            .then((responce) => {
-                //console.log(responce.data.code)
-                if (responce.data.code === 200) {
-                    setOtpSent(true)
+        const formData = getValues(); // Get the current form values
+        const { email } = formData;
 
-                    setTimeout(() => {
-                        setShowVerification(true);
-                    }, 3000)
+        console.log(email);
+        axios.post('http://localhost:3000/sentOtp', { email })
+            .then((response) => {
+                console.log(response.data)
+                if (response.status === 200) {
+                    setOtpSent(true);
+
+
+
+                    setShowVerification(true);
+
                 }
-
             })
             .catch((error) => {
-                console.log(error)
-            })
-
-
-
+                console.log(error);
+            });
     };
 
     return (
@@ -67,7 +67,7 @@ const EmailEntry = () => {
                         <div className='errors-message'>
                             <p>{errors.email?.message}</p>
                         </div>
-                        {otpSent && <p>OTP has been sent to your email.</p>}
+                        {otpSent && <p>OTP has been sent to your email. Check your inbox.</p>}
                         <button type="submit">Send OTP</button>
                     </div>
                 ) : (

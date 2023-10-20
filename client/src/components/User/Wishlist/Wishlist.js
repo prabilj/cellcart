@@ -13,7 +13,7 @@ const Wishlist = () => {
     const userId = localStorage.getItem('uId');
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/displayWishlist/${userId}`)
+        axios.get(`http://localhost:3000/users/${userId}/wishlist`)
             .then((response) => {
                 console.log("responseData", response.data);
                 setWishlistItems(response.data);

@@ -1,4 +1,3 @@
-/* ViewProducts.css */
 .app {
   display: flex;
   flex-direction: column;
@@ -11,19 +10,36 @@
   margin-bottom: 20px;
 }
 
+.products-page {
+  width: 80%;
+  max-width: 1200px;
+  /* Limit the maximum width of the content */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
 .product-list {
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  padding: 20px;
 }
 
 .product-card {
-  width: calc(33.33% - 20px);
-  background-color: #fff;
-  border: 1px solid #ddd;
+  flex: 1;
+  min-width: 300px;
+  /* Minimum width for each product card */
+  background-color: #ddd;
+  border: 1px solid #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: left;
+  margin: 10px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .product-name {
@@ -56,26 +72,44 @@
 }
 
 .update-button {
-  background-color: #007bff;
+  background-color: #563517;
   color: #fff;
 }
 
 .update-button:hover {
-  background-color: #0056b3;
+  background-color: #a16c3b;
 }
 
 .delete-button {
-  background-color: #ff5722;
+  background-color: #563517;
   color: #fff;
 }
 
 .delete-button:hover {
-  background-color: #e54e2e;
+  background-color: #a16c3b;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 100%;
+  max-width: 300px;
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
 }
 
 /* Media query for responsiveness */
+@media screen and (max-width: 1200px) {
+  .product-card {
+    flex: 1;
+    min-width: 45%;
+    /* Adjust the minimum width of each product card as needed */
+  }
+}
+
 @media screen and (max-width: 768px) {
   .product-card {
-    width: calc(50% - 20px);
+    min-width: 100%;
+    /* Make each product card take up the full width on small screens */
   }
 }

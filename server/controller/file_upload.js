@@ -4,6 +4,7 @@ const s3 = new aws.S3()
 
 
 async function fileUpload(req, res) {
+  console.log(req.body)
   try {
     const { originalname, buffer } = req.file;
     console.log(buffer)

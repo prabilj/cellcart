@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { deleteUsersApi, displayUsersApi } from '../../Api/Api';
 import Avatar from '@mui/material/Avatar';
 import CircularProgress from '@mui/material/CircularProgress';
 import './Users.css';
 import Sidebar from '../Sidebar/Sidebar';
 import { Button } from '@mui/material';
+import Swal from 'sweetalert2';
+
+import { deleteUsersApi, displayUsersApi } from '../../Api/Api';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -26,25 +28,37 @@ const Users = () => {
     fetchUsers();
   }, []);
 
-  const getRandomColor = (_id) => {
-    const colors = [
-      "#FF5733",
-      "#33FF57",
-      "#5733FF",
-    ];
-    const index = _id % colors.length;
-    return colors[index];
+  const getRandomColor = () => {
+    const randomColor = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+    return randomColor;
   };
+
 
   const handleDeleteUser = async (userId) => {
     try {
-      // Send a DELETE request to delete the user by their ID
-      //await deleteUsersApi(userId);
+      // Show a confirmation dialog
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to delete this user.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, keep it',
+      });
 
-    
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+      if (result.isConfirmed) {
+        // User clicked "Yes, delete it!" button, proceed with the delete action
+        const response = await deleteUsersApi(userId);
+        console.log("response", response.message)
+        setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+
+        // Show a success message after successful deletion
+        await Swal.fire('Deleted!', 'The user has been deleted.', 'success');
+      }
     } catch (error) {
       console.error('Error deleting user:', error);
+      // Show an error message if the deletion fails
+      await Swal.fire('Error!', 'There was an error deleting the user.', 'error');
     }
   };
 

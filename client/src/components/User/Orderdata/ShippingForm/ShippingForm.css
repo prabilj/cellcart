@@ -1,0 +1,70 @@
+/* ShippingForm.css */
+
+/* Main container */
+.shipping-main-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+/* Left side (Shipping Address) */
+.shipping-data-container {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+/* Shipping Address form */
+.shipping-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.shipping-form input {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.shipping-form select {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.shipping-form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.shipping-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Right side (Order Details) */
+.order-details {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+.order-details h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Additional styling can be added based on your design requirements */

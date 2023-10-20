@@ -1,6 +1,6 @@
 
 import './App.css';
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,11 +15,15 @@ import Wishlist from './components/User/Wishlist/Wishlist';
 import Cart from './components/User/AddCart/Cart';
 import ResetPassword from './components/User/Login/Resetpassword';
 import ChangePassword from './components/User/Login/ChangePassword';
-import UserProfile from './components/UserProfile/UserProfile'
+import UserProfile from './components/User/UserProfile/UserProfile'
 import Sidebar from './components/Admin/Sidebar/Sidebar';
 import Users from './components/Admin/Users/Users';
 import AddProduct from './components/Admin/ProductPage/AddProduct'
 import ViewProducts from './components/Admin/ProductPage/ViewProducts'
+import Dashboard from './components/Admin/Dashboard/Dashboard'
+import OrdersPage from './components/Admin/Orders/Orders'
+import ShippingForm from './components/User/Orderdata/ShippingForm/ShippingFrom';
+import UserOrderPage from './components/User/Orderdata/myOrder/Myorder';
 
 
 
@@ -38,6 +42,8 @@ function App() {
         <Route path='/resetpassword' element={<ResetPassword />} />
         <Route path='/changepassword' element={<ChangePassword />} />
         <Route path='/editprofile' element={<UserProfile />} />
+        <Route path='/checkout' element={<ShippingForm />} />
+        <Route path='/myorders' element={<UserOrderPage/>}/>
 
 
 
@@ -46,6 +52,9 @@ function App() {
         <Route path='/ViewProducts' element={<ViewProducts />} />
         <Route path='/AddProduct' element={<AddProduct />} />
         <Route path='/Users' element={<Users />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/orders' element={<OrdersPage />} />
+        
 
 
 

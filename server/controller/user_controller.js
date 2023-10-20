@@ -12,7 +12,7 @@ const userLogIn = async (request, response) => {
 
         if (user) {
             if (user.isEmailverified) {
-            
+
                 const isPasswordValid = await bcrypt.compare(request.body.password, user.password);
 
                 if (isPasswordValid) {
@@ -74,7 +74,8 @@ const userSignUp = async (request, response) => {
             request.body.password = await bcrypt.hash(request.body.password, 10);
 
             const user = request.body;
-            otp = await sendOTP(user.email)
+            const email = user.email
+             otp = await sendOTP(email)
             user.otp = otp
             const newUser = new User(user);
             await newUser.save();
@@ -110,7 +111,7 @@ const userLogOut = (request, response) => {
 const displayUser = async (request, response) => {
 
     try {
-        console.log("inside display user api")
+        // console.log("inside display user api")
         const display = await User.find();
         response.status(201).json({
             message: "users data",
@@ -262,7 +263,7 @@ const resetPassword = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const user = await User.findOne({ email: req.body.email });
         //console.log(user)
         if (!user) {

@@ -1,0 +1,25 @@
+.dashboad_container {
+    display: flex;
+    margin-left: 30%;
+    border: 1px solid #ddd;
+    box-shadow: 10% 10% 10% #020202;
+
+    max-width: 400px;
+    margin: 50px auto;
+    /* Center the container horizontally */
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product_dashboad {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 10px;
+    box-sizing: border-box;
+    position: relative;
+}

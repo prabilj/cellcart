@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './NavigationBar.css';
 import {
@@ -11,15 +11,18 @@ import {
     responsiveFontSizes,
     useMediaQuery,
     Box,
-    Menu, 
-    MenuItem, 
+    Menu,
+    MenuItem,
     Avatar,
+    Badge,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonIcon from '@mui/icons-material/Person';
+// import PersonIcon from '@mui/icons-material/Person';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import { displayCartApi } from '../Api/Api';
 
 
 const NavigationBar = () => {
@@ -27,6 +30,7 @@ const NavigationBar = () => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(null); // Use null to control Menu visibility
     const [anchorEl, setAnchorEl] = useState(null); // Anchor element for the Menu
+    const [cartCount, setCartCount] = useState(0);
 
     let theme = createTheme({
         palette: {
@@ -34,6 +38,9 @@ const NavigationBar = () => {
             primary: {
                 main: '#ffff',
             },
+            customcolor: {
+                main: '#563517'
+            }
         },
     });
 
@@ -47,7 +54,16 @@ const NavigationBar = () => {
     const handleCloseProfileMenu = () => {
         setIsProfileMenuOpen(false); // Close the Menu
     };
-
+    useEffect(() => {
+        displayCartApi()
+            .then((response) => {
+                //console.log("response of cart", response);
+                setCartCount(response.length);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }, []);
     const handleLogOut = () => {
         const userToken = localStorage.getItem('userToken')
 
@@ -82,7 +98,10 @@ const NavigationBar = () => {
                     <Box flexGrow={1} />
                     <Button color="inherit" component={Link} to="/cart">
                         <IconButton color="inherit">
-                            <ShoppingCartIcon />
+                            <Badge badgeContent={cartCount} color="customcolor">
+                                <ShoppingCartIcon />
+                            </Badge>
+
                         </IconButton>
                     </Button>
                     <Button color="inherit" component={Link} to="/wishlist">
@@ -96,7 +115,7 @@ const NavigationBar = () => {
                         </IconButton>
                     </Button>
 
-                    {/* Profile Dropdown */}
+
                     <Menu
                         anchorEl={anchorEl}
                         open={isProfileMenuOpen}
@@ -104,6 +123,10 @@ const NavigationBar = () => {
                     >
                         <MenuItem >
                             <h3>{name}</h3>
+                        </MenuItem>
+                        <MenuItem component={Link} to="/myorders" onClick={handleCloseProfileMenu}>
+                            < LocalMallIcon />
+                            My order
                         </MenuItem>
                         <MenuItem component={Link} to="/editprofile" onClick={handleCloseProfileMenu}>
                             Edit Profile
@@ -116,7 +139,6 @@ const NavigationBar = () => {
                             Logout
                         </MenuItem>
                     </Menu>
-                    {/* End of Profile Dropdown */}
                 </Toolbar>
             </AppBar>
         </ThemeProvider>
@@ -124,3 +146,5 @@ const NavigationBar = () => {
 };
 
 export default NavigationBar;
+
+

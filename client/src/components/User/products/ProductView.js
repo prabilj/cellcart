@@ -1,177 +1,157 @@
-
 import React, { useState, useEffect } from 'react';
-
 import { useParams } from 'react-router-dom';
-import axios from 'axios'
-
+import axios from 'axios';
 import NavigationBar from '../../nav/NavigationBar';
 import { Button } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-//import { handleWishlistToggle } from './cartFunction'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { addToCartApi } from '../../Api/Api';
 
-
-
-
-
-import './ProductView.css'
+import Swal from 'sweetalert2'
+import './ProductView.css';
 import Loader from './Loader';
+
 const ProductView = () => {
 
-    const { _id } = useParams();
-    // console.log("userId", userId)
+  const { _id } = useParams();
+  const [productsDetails, setproductsDetails] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistId, setWishlistId] = useState();
 
-    const [productsDetails, setproductsDetails] = useState([])
-    const [loading, setLoading] = useState(true);
-    const [isInWishlist, setIsInWishlist] = useState(false);
-    const [wishlistId, setWishlistId] = useState()
-    useEffect(() => {
-        console.log("productId", _id)
+  useEffect(() => {
+    axios.get(`http://localhost:3000/products/${_id}`)
+      .then(response => {
+        setproductsDetails(response.data.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log(error);
+        setLoading(true);
+      });
+  }, [_id]);
 
-//
-
-        axios.get(`http://localhost:3000/dislayproduct/${_id}`)
-            .then(response => {
-                //console.log(response.data.data)
-                setproductsDetails(response.data.data)
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log(error)
-                setLoading(true)
-            })
-    }, [_id])
-      const handleWishlistToggle = () => {
-
-        const formData = {
-            userId: localStorage.getItem('uId'),
-            productId: _id
-        }
-        console.log(formData)
-        const Id = wishlistId
-
-
-
-        console.log("isInWishlist", isInWishlist)
-
-        if (isInWishlist) {
-            console.log("wishlistId", Id)
-            // Remove from wishlist
-            axios
-                .delete(`http://localhost:3000/removewishlist/${Id}`)
-                .then(response => {
-                    console.log("deletesuccess", response.data.data);
-                    setIsInWishlist(false);
-                })
-                .catch(error => {
-
-                    console.log(error);
-                });
-        }
-        else {
-
-            axios
-                .post('http://localhost:3000/addwishlist', formData)
-                .then(response => {
-                    console.log("addwishlistresponce", response.data.data.data);
-                    localStorage.setItem("wishlistId", response.data.data.data)
-                    setIsInWishlist(true);
-                    setWishlistId(response.data.data.data)
-
-                })
-                .catch(error => {
-                    console.log("errId", error.response.data.data.id);
-                    const whishId = error.response.data.data.id
-                    const message = error.response.data.message
-
-                    if (message === "Product is already in the wishlist") {
-                        //alert("product is in wishlist")
-                        setIsInWishlist(true);
-                        setWishlistId(whishId)
-
-
-                    }
-
-                });
-        }
-
+  const handleWishlistToggle = async () => {
+    const formData = {
+      userId: localStorage.getItem('uId'),
+      productId: _id
 
     };
 
-    return (
-        <>
-            <NavigationBar />
-            <div className='view-container'>
+    const Id = wishlistId;
 
-                {loading ? (
-                    <Loader />
-                ) : (<>
+    if (isInWishlist) {
 
+      await axios.delete(`http://localhost:3000/users/wishlist/${Id}`)
+        .then(response => {
+          console.log("deletesuccess", response.data.data);
+          setIsInWishlist(false);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
 
+      await axios.post(`http://localhost:3000/users/wishlist`, formData)
+        .then(response => {
+          console.log("addwishlistresponce", response.data.data.data);
+          localStorage.setItem("wishlistId", response.data.data.data);
+          setIsInWishlist(true);
+          setWishlistId(response.data.data.data);
+        })
+        .catch(error => {
+          //console.log("errId", error.response.data.data.id);
+          const whishId = error.response.data.data.id;
+          const message = error.response.data.message;
 
+          if (message === "Product is already in the wishlist") {
+            setIsInWishlist(true);
+            setWishlistId(whishId);
+          }
+        });
+    }
+  };
 
+  const handleAddToCart = (productId) => {
+    addToCartApi(productId)
+      .then((response) => {
+        console.log(`Added to Cart`, response.data.message);
+        if (response.data.message === 'Item is already in the cart') {
+          toast.warning('Item is already in the cart', {
+            position: 'top-right',
+            autoClose: 3000,
+          });
+        } else if (response.data.message === 'Product added to cart') {
+          toast.success('Product added to cart', {
+            position: 'top-right',
+            autoClose: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding to cart:', error);
+      });
+  };
+  const handleBuyItem = async () => {
+    Swal.fire({
+      icon: "sucess",
+      title: "oder",
+      text: "item has placed"
+    })
+  }
 
-
-                    <div >
-                        <img src={productsDetails.pimage} alt='logo' className='view-image'
-                        />
-                    </div>
-                    <div className='viewlist'>
-                        <div className={`favotate_btn ${isInWishlist ? 'in-wishlist' : ''}`} onClick={handleWishlistToggle}>
-                            <FavoriteIcon style={{ color: isInWishlist ? 'red' : 'rgb(79, 14, 14)' }} />
-
-                        </div>
-
-                        <h1>{productsDetails.productName}</h1>
-                        <div className='box-div'>
-                            < h3>Display:{productsDetails.Display}</h3>
-                            < h3>Processor:{productsDetails.Processor}</h3>
-                            < h3>Camera:{productsDetails.Camera}</h3>
-                            <h3>Battey:{productsDetails.Battery}</h3>
-                            <h3>Storage:{productsDetails.Storage}</h3>
-
-
-                            <p className='Description'>Description :{productsDetails.Description}</p>
-                            <h3>${productsDetails.price}</h3>
-                        </div>
-
-                        <Button
-                            variant="contained"
-                            size='large'
-                            style={{ backgroundColor: '#563517', color: 'white', marginRight: "100px" }}
-                            onClick={() => {
-                                
-                            }}
-                        >
-                            Buy
-                        </Button>
-                        <Button
-
-                            variant="outlined"
-                            size='large'
-                            style={{ color: '#563517', borderColor: '#563517' }}
-                            onClick={() => {
-
-                                
-                            }}
-                        >
-                            Add to cart
-                        </Button>
-
-
-                    </div>
-
-
-
-
-
-                </>
-                )}
-
-
-            </div >
-
-        </>
-    )
+  return (
+    <>
+      <NavigationBar />
+      <div className='view-container'>
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            <div>
+              <img src={productsDetails.pimage} alt='logo' className='view-image' />
+            </div>
+            <div className='viewlist'>
+              <div className={`favotate_btn ${isInWishlist ? 'in-wishlist' : ''}`} onClick={handleWishlistToggle}>
+                <FavoriteIcon style={{ color: isInWishlist ? 'red' : 'rgb(79, 14, 14)' }} />
+              </div>
+              <h1>{productsDetails.productName}</h1>
+              <div className='box-div'>
+                <h3>Display:{productsDetails.Display}</h3>
+                <h3>Processor:{productsDetails.Processor}</h3>
+                <h3>Camera:{productsDetails.Camera}</h3>
+                <h3>Battery:{productsDetails.Battery}</h3>
+                <h3>Storage:{productsDetails.Storage}</h3>
+                <p className='Description'>Description :{productsDetails.Description}</p>
+                <h3>${productsDetails.price}</h3>
+              </div>
+              <Button
+                variant="contained"
+                size='large'
+                style={{ backgroundColor: '#563517', color: 'white', marginRight: "100px" }}
+                onClick={() => {
+                  handleBuyItem()
+                }}
+              >
+                Buy
+              </Button>
+              <Button
+                variant="outlined"
+                size='large'
+                style={{ color: '#563517', borderColor: '#563517' }}
+                onClick={() => {
+                  handleAddToCart(_id);
+                }}
+              >
+                Add to cart
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
 }
 
 export default ProductView;

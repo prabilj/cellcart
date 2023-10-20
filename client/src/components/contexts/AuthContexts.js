@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
     const [token, setToken] = useState()
     const [userId, setUserId] = useState();
 
-    // Function to set the token and user ID
+    
     const login = (newToken, newUserId) => {
         console.log('Setting token:', newToken)
         setToken(newToken);
@@ -22,13 +22,12 @@ export function AuthProvider({ children }) {
 
     };
 
-    // Function to clear the token and user ID
     const logout = () => {
         setToken(null);
         setUserId(null);
 
     };
-
+   
     // Create a context value object
     const contextValue = {
         token,

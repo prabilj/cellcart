@@ -1,6 +1,7 @@
 const Product = require('../model/productSchema')
 
 const newProduct = async (request, response) => {
+    console.log("inside new product", request.body)
     try {
         const newProduct = new Product(request.body);
         await newProduct.save();
@@ -54,9 +55,14 @@ const getProduct = async (request, response) => {
 
 const deleteProduct = async (request, response) => {
     try {
-        const del = await Product.deleteOne({ productId: request.params.productId })
+        const del = await Product.deleteOne({ _id: request.params.productId })
+        // console.log(request.params.productId)
         if (del) {
-            response.status(200).json(del);
+            response.status(200).json(
+                {
+                    message: "product deleted",
+                    daat: del
+                });
         }
         else {
             response.status(404).json({ message: 'Product not found' });

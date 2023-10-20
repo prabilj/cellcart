@@ -2,8 +2,21 @@
 const Cart = require('../model/cartSchema')
 const addToCart = async (req, res) => {
     try {
-        const { userId, productId, quantity } = req.body;
-        console.log(req.body); 
+        const { productId, quantity } = req.body;
+        const { userId } = req.params
+        // Check if the product is already in the cart
+        const existingCartItem = await Cart.findOne({ userId, productId });
+
+        if (existingCartItem) {
+            return res.json({
+                message: 'Item is already in the cart',
+                data: {
+                    data: existingCartItem._id
+                }
+            });
+        }
+
+        // If the product is not in the cart, add it
         const cartEntry = new Cart({
             userId,
             productId,
@@ -23,6 +36,7 @@ const addToCart = async (req, res) => {
         res.status(500).json({ message: 'Error adding to cart' });
     }
 }
+
 const deleteFromCart = async (req, res) => {
     try {
         const deletedCartItem = await Cart.deleteOne({ _id: req.params.cartId });
@@ -42,7 +56,7 @@ const displayCart = async (request, response) => {
     try {
         const userId = request.params.userId;
         console.log(userId);
-        const cartItems = await Cart.find({ userId: userId}).populate('productId');
+        const cartItems = await Cart.find({ userId: userId }).populate('productId');
         response.status(200).json({
             data: {
                 data: cartItems
@@ -57,35 +71,35 @@ const displayCart = async (request, response) => {
 const updateQuantity = async (req, res) => {
     try {
         console.log("inside the update quantity")
-      const cartId = req.params.cartId;
-      const { quantity } = req.body;
-  
-      const cartItem = await Cart.findOne({ _id: cartId });
-  
-      if (!cartItem) {
-        return res.status(404).json({ message: 'Cart item not found' });
-      }
-  
-      cartItem.quantity = quantity;
-      const updatedCartItem = await cartItem.save();
-  
-      res.status(200).json({ message: 'Cart item quantity updated', data: updatedCartItem });
-      console.log(updatedCartItem)
+        const cartId = req.params.cartId;
+        const { quantity } = req.body;
+
+        const cartItem = await Cart.findOne({ _id: cartId });
+
+        if (!cartItem) {
+            return res.status(404).json({ message: 'Cart item not found' });
+        }
+
+        cartItem.quantity = quantity;
+        const updatedCartItem = await cartItem.save();
+
+        res.status(200).json({ message: 'Cart item quantity updated', data: updatedCartItem });
+        console.log(updatedCartItem)
     } catch (error) {
-      console.error('Error updating cart item quantity:', error);
-      
-      res.status(500).json({ message: 'Error updating cart item quantity' });
+        console.error('Error updating cart item quantity:', error);
+
+        res.status(500).json({ message: 'Error updating cart item quantity' });
     }
-  }                                                                                                                                                                     
-  
-
-  
+}
 
 
-  
+
+
+
+
 
 
 module.exports.deleteFromCart = deleteFromCart;
 module.exports.addToCart = addToCart;
 module.exports.displayCart = displayCart;
-module.exports.updateQuantity=updateQuantity;
+module.exports.updateQuantity = updateQuantity;

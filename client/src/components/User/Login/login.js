@@ -40,12 +40,12 @@ const Login = () => {
                 localStorage.setItem("userToken", response.data.token)
                 localStorage.setItem("uId", response.data.uId)
                 localStorage.setItem("name", response.data.Data.name)
-                localStorage.setItem('email',response.data.Data.email)
+                localStorage.setItem('email', response.data.Data.email)
 
                 if (response.status === 200) {
                     if (response.data.Data.isadmin === 'yes') {
                         console.log("user is admin")
-                        navigate('/dashboard');
+                        navigate('/sidebar');
                     }
                     else {
                         console.log("login as user")

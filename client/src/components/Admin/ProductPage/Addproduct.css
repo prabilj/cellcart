@@ -1,13 +1,14 @@
-/* src/components/AddProduct.css */
+
 
 .add-product-container {
     max-width: 400px;
-    margin: 0 auto;
+    margin-left: 20% auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #fff;
+    background-color: #ddd;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0%;
 }
 
 .add-product-container h1 {
@@ -25,8 +26,8 @@
 .add-product-container form input[type="number"],
 .add-product-container form textarea,
 .add-product-container form input[type="file"] {
-    width: 100%;
-    padding: 10px;
+    width: 80%;
+    padding: 12px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -35,7 +36,7 @@
 .add-product-container form button[type="submit"] {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #563517;
     color: #fff;
     border: none;
     border-radius: 3px;
@@ -43,5 +44,19 @@
 }
 
 .add-product-container form button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #724419;
+}
+
+.productDiv {
+    display: flex;
+    width: 100%;
+    gap: 1%;
+
+}
+.error-message{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ce0f0f;
+
 }

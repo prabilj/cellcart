@@ -1,15 +1,13 @@
 const nodemailer = require('nodemailer');
-const dotenv= require('dotenv')
-
+const dotenv = require('dotenv');
+dotenv.config(); // Load environment variables
 
 const User = require('../model/userSchema');
-const Email=process.env.email
-const Password =process.env.email_pass
-
+const Email = process.env.EMAIL;
+const Password = process.env.EMAIL_PASS;
 
 // Send OTP to user's email
 const sendOTP = async (email) => {
-    console.log(email)
     const digits = '0123456789';
     let otp = '';
 
@@ -17,13 +15,10 @@ const sendOTP = async (email) => {
         const randomIndex = Math.floor(Math.random() * digits.length);
         otp += digits.charAt(randomIndex);
     }
-    console.log(otp)
-    //  user.otp = otp;
-    // await user.save();
 
     // Send OTP to user's email
     const transporter = nodemailer.createTransport({
-        service: 'Gmail', 
+        service: 'Gmail',
         auth: {
             user: Email,
             pass: Password
@@ -37,31 +32,41 @@ const sendOTP = async (email) => {
         text: `Your OTP for email verification is: ${otp}`
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log('Error sending email: ', error);
-        } else {
-            console.log('Email sent: ', info.response);
-        }
-    });
-    return otp
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ', info.response);
+        await updateOtp(email, otp); // Update the OTP in the database
+
+        return otp;
+    } catch (error) {
+        console.log('Error sending email: ', error);
+        throw error;
+    }
+};
+
+const updateOtp = async (email, otp) => {
+    try {
+        const filter = { email: email };
+        const update = { otp: otp };
+        await User.updateOne(filter, update);
+    } catch (error) {
+        console.log('Error updating OTP in User schema: ', error);
+        throw error;
+    }
 };
 
 // Verify OTP
 const verifyOTP = async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });
-        //console.log(user);
-        console.log(req.body)
+
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        console.log(req.body.otp)
-        if (user.otp === req.body.otp) {
-            console.log(user.otp)
 
+        if (user.otp === req.body.otp) {
             // OTP matched, mark email as verified
-            user.isEmailverified = true;
+            user.isEmailVerified = true;
             await user.save();
 
             return res.status(200).json({ message: 'Email verified successfully' });
@@ -73,6 +78,5 @@ const verifyOTP = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 
 module.exports = { User, sendOTP, verifyOTP };
