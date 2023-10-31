@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NavigationBar from '../../nav/NavigationBar';
 import { Button } from '@mui/material';
@@ -7,18 +7,28 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addToCartApi } from '../../Api/Api';
+import { useAuth } from '../../contexts/AuthContexts'
 
 import Swal from 'sweetalert2'
 import './ProductView.css';
 import Loader from './Loader';
 
 const ProductView = () => {
-
+  const navigate = useNavigate();
+  const { cart } = useAuth();
   const { _id } = useParams();
   const [productsDetails, setproductsDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [wishlistId, setWishlistId] = useState();
+
+  const details = {
+
+    productId: productsDetails,
+    quantity: 1
+  }
+
+  console.log("details is", details)
 
   useEffect(() => {
     axios.get(`http://localhost:3000/products/${_id}`)
@@ -93,13 +103,7 @@ const ProductView = () => {
         console.error('Error adding to cart:', error);
       });
   };
-  const handleBuyItem = async () => {
-    Swal.fire({
-      icon: "sucess",
-      title: "oder",
-      text: "item has placed"
-    })
-  }
+
 
   return (
     <>
@@ -131,7 +135,9 @@ const ProductView = () => {
                 size='large'
                 style={{ backgroundColor: '#563517', color: 'white', marginRight: "100px" }}
                 onClick={() => {
-                  handleBuyItem()
+                  navigate('/checkout');
+                  cart([details])
+
                 }}
               >
                 Buy

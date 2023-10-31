@@ -76,7 +76,7 @@ const UserOrderPage = () => {
                                         ))}
                                     </TableCell>
                                     <TableCell>{order.status}</TableCell>
-                                    <TableCell>{order.paymentStatus}</TableCell>
+                                    <TableCell>{order.paymentMethod}</TableCell>
                                     <TableCell>{order.totalAmount}</TableCell>
                                 </TableRow>
                             ))}

@@ -74,8 +74,12 @@ const userSignUp = async (request, response) => {
             request.body.password = await bcrypt.hash(request.body.password, 10);
 
             const user = request.body;
+            // const emailData = {
+            //     email: user.email
+            // }
             const email = user.email
-             otp = await sendOTP(email)
+
+            otp = await sendOTP({ email: email })
             user.otp = otp
             const newUser = new User(user);
             await newUser.save();

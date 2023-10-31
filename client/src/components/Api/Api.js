@@ -47,7 +47,11 @@ export const updateQuantityApi = async (itemId, newQuantity) => {
 //wishlist
 
 export const addToWishlistApi = (productId) => {
-  return axios.post(`${baseUrl}/users/wishlist`, { productId });
+  const formData = {
+    userId: userId,
+    productId: productId
+  }
+  return axios.post(`${baseUrl}/users/wishlist`, formData);
 };
 
 export const removeFromWishlistApi = async (itemId) => {
@@ -114,3 +118,29 @@ export const updateOrderStatusApi = async (orderId, status) => {
   //console.log(response)
   return response
 }
+export const createOrderApi = async (formData, userId) => {
+  console.log("formData----", formData);
+
+  try {
+    const response = await axios.post(`${baseUrl}/users/${userId}/orders`, formData);
+    console.log(response.data.order.orderID);
+
+    if (response.status === 200) {
+      // console.log("success");
+      const addressData = {
+        userId: userId,
+        orderId: response.data.order._id,
+        ...formData,
+      };
+
+      const addressResponse = await axios.post(`${baseUrl}/users/addaddress`, addressData);
+      console.log(addressResponse);
+      return addressResponse
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Error while creating order", error);
+    return error;
+  }
+};

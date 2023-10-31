@@ -21,8 +21,7 @@ const Sidebar = () => {
   };
 
   const logout = () => {
-    // Perform any logout logic (e.g., clearing user session)
-    // Redirect the user to the logout page
+    localStorage.clear();
     navigate('/login');
   };
 

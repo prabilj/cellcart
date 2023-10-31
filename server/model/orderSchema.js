@@ -26,6 +26,10 @@ const orderSchema = new mongoose.Schema({
         enum: ["pending", "shipped", "delivered"],
         default: "pending",
     },
+    paymentMethod: {
+        type: String,
+        required: true
+    },
     orderDetails: [
         {
             productId: {
@@ -43,6 +47,6 @@ const orderSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model('Orders', orderSchema);
 module.exports = Order
 

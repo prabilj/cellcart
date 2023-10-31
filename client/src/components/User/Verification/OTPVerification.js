@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 const OTPVerificationModal = ({ email, someState }) => {
+    
     console.log(someState)
     const [otp, setOtp] = useState('');
     const [open, setOpen] = useState(true);

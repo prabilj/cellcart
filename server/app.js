@@ -10,6 +10,7 @@ const Product = require('./controller/product_controller')
 const Cart = require('./controller/cart_controller')
 const Wishlist = require('./controller/wishList_controller')
 const Order = require('./controller/order_controller')
+const Address = require('./controller/user_address_controller')
 const { fileUpload } = require('./controller/file_upload')
 app.use(cors())
 app.use(bodyParser.json());
@@ -69,6 +70,7 @@ app.delete('/users/wishlist/:Id', Wishlist.deleteWishlist)
 app.post('/users/:userId/orders', Order.createOrder)
 app.get('/users/:userId/orders', Order.getOrderById)
 
+app.post('/users/addaddress', Address.addAddress)
 
 
 

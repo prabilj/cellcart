@@ -9,11 +9,9 @@ import { useLocation } from 'react-router-dom';
 
 const EmailEntry = () => {
     const location = useLocation();
-    //console.log("location", location);
     const { status } = location.state || {};
-    console.log("status1", status);
     const schema = yup.object().shape({
-        email: yup.string().email('Invalid email format').required('Email is required')
+        email: yup.string().email('Invalid email format').required('Email is required'),
     });
 
     const { register, handleSubmit, formState: { errors }, getValues } = useForm({
@@ -29,20 +27,13 @@ const EmailEntry = () => {
     };
 
     const handleSendOTP = () => {
-        const formData = getValues(); // Get the current form values
-        const { email } = formData;
-
-        console.log(email);
-        axios.post('http://localhost:3000/sentOtp', { email })
+        const formData = getValues();
+        axios.post('http://localhost:3000/sentOtp', formData)
             .then((response) => {
-                console.log(response.data)
+                console.log("email response __", response)
                 if (response.status === 200) {
                     setOtpSent(true);
-
-
-
                     setShowVerification(true);
-
                 }
             })
             .catch((error) => {

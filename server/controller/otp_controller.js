@@ -1,13 +1,20 @@
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const User = require('../model/userSchema');
 const Email = process.env.EMAIL;
 const Password = process.env.EMAIL_PASS;
 
 // Send OTP to user's email
-const sendOTP = async (email) => {
+const sendOTP = async (req, res) => {
+    
+    const email = req.email || (req.body && req.body.email);
+    console.log("email", email);
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+
     const digits = '0123456789';
     let otp = '';
 
@@ -35,11 +42,17 @@ const sendOTP = async (email) => {
     try {
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent: ', info.response);
-        await updateOtp(email, otp); // Update the OTP in the database
+        if (info.response) {
+            res.status(200).json({ message: 'Email sent successfully' });
+        } else {
+            res.status(500).json({ message: 'Error sending email' });
+        }
+        await updateOtp(email, otp);
 
         return otp;
     } catch (error) {
         console.log('Error sending email: ', error);
+        res.status(500).json({ message: 'Error sending email', error: error });
         throw error;
     }
 };
@@ -58,7 +71,8 @@ const updateOtp = async (email, otp) => {
 // Verify OTP
 const verifyOTP = async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.body.email });
+        const email = req.body.email;
+        const user = await User.findOne({ email: email });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });

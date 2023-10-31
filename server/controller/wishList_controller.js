@@ -2,13 +2,13 @@ const Wishlist = require('../model/wishlistSchema');
 
 const addWishList = async (req, res) => {
     try {
-        // const { userId, productId } = req.body
+        const { userId, productId } = req.body
 
         console.log(req.body)
         const existingWishlistItem = await Wishlist.findOne({ userId: userId, productId: productId });
         console.log(existingWishlistItem)
         if (existingWishlistItem) {
-            return res.status(400).json({
+            return res.json({
                 message: 'Product is already in the wishlist',
                 data: {
                     id: existingWishlistItem._id

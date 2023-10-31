@@ -9,10 +9,11 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import axios from 'axios';
 import NavigationBar from '../../nav/NavigationBar';
 import Loader from '../products/Loader';
-import ShippingForm from '../Orderdata/ShippingForm/ShippingFrom';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContexts'
 
 const Cart = () => {
+    const { cart } = useAuth();
     const [carts, setCarts] = useState([]);
     const [loading, setLoading] = useState(true);
     const userId = localStorage.getItem('uId');
@@ -39,7 +40,7 @@ const Cart = () => {
 
         updateQuantityApi(itemId, newQuantity)
             .then((response) => {
-                const updatedCartItem = response;
+                //const updatedCartItem = response;
                 const updatedCarts = carts.map((item) => {
                     if (item._id === itemId) {
                         return { ...item, quantity: newQuantity };
@@ -115,6 +116,9 @@ const Cart = () => {
                                                     onClick={() => {
                                                         navigate('/checkout');
 
+                                                        cart([item])
+
+
                                                     }}>
                                                     Buy
                                                 </Button>
@@ -127,20 +131,21 @@ const Cart = () => {
                                 </ul>
                                 <div className='checkout'>
                                     <h3>Total: ${calculateTotal()}</h3>
-                                    <Link
-                                        to={
-                                            {
-                                                pathname: '/checkout',
-                                                state: { itemDetails: carts },
-                                            }}><Button
-                                                className='checkout-button'
-                                                variant="contained"
-                                                size='large'
-                                                style={{ backgroundColor: '#563517', color: 'white', marginTop: "10px" }}
-                                            >
-                                            Checkout
-                                        </Button>
-                                    </Link>
+                                    <Button
+                                        className='checkout-button'
+                                        variant="contained"
+                                        size='large'
+                                        style={{ backgroundColor: '#563517', color: 'white', marginTop: "10px" }}
+                                        onClick={() => {
+                                            navigate('/checkout');
+                                            cart(carts)
+
+
+                                        }}>
+
+                                        Checkout
+                                    </Button>
+
                                 </div>
                             </>
                         )}

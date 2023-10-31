@@ -12,8 +12,9 @@ export function useAuth() {
 export function AuthProvider({ children }) {
     const [token, setToken] = useState()
     const [userId, setUserId] = useState();
+    const [productData, setProductData] = useState();
 
-    
+
     const login = (newToken, newUserId) => {
         console.log('Setting token:', newToken)
         setToken(newToken);
@@ -27,13 +28,19 @@ export function AuthProvider({ children }) {
         setUserId(null);
 
     };
-   
+    const cart = (newproductData) => {
+        console.log("newproductData", newproductData)
+        setProductData(newproductData)
+    }
+
     // Create a context value object
     const contextValue = {
         token,
         userId,
+        productData,
         login,
         logout,
+        cart
     };
 
     return (

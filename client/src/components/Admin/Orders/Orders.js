@@ -47,9 +47,9 @@ const OrdersPage = () => {
     };
 
     return (
-        <div style={{ display: 'flex',justifyContent:"center" }}>
+        <div style={{ display: 'flex', justifyContent: "center" }}>
             <Sidebar />
-            <div style={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '5px', marginLeft:"10%"}}>
+            <div style={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '5px', marginLeft: "10%" }}>
                 <Typography variant="h4" gutterBottom>
                     Orders
                 </Typography>
@@ -92,7 +92,7 @@ const OrdersPage = () => {
                                             </Select>
                                         </FormControl>
                                     </TableCell>
-                                    <TableCell>{order.paymentStatus}</TableCell>
+                                    <TableCell>{order.paymentMethod}</TableCell>
                                     <TableCell>{order.totalAmount}</TableCell>
                                 </TableRow>
                             ))}

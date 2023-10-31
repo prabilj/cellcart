@@ -3,19 +3,20 @@ const createOrder = async (req, res) => {
     try {
         const { userId } = req.params
         // console.log(userId)
-        const { totalAmount, orderDetails } = req.body;
+        const { totalAmount, orderDetails, paymentMethod } = req.body;
 
 
         const newOrder = new Order({
             userId,
             totalAmount,
-            orderDetails
+            orderDetails,
+            paymentMethod
         });
 
 
         await newOrder.save();
 
-        res.json({ message: "New order created successfully", order: newOrder });
+        res.status(200).json({ message: "New order created successfully", order: newOrder });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "An error occurred while creating the new order" });

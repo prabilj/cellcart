@@ -15,7 +15,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-
 } from '@mui/material';
 import NavigationBar from '../../nav/NavigationBar';
 import { toast } from 'react-toastify';
@@ -25,8 +24,6 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('price');
-
-
 
   useEffect(() => {
     displayProductsApi()
@@ -53,21 +50,16 @@ const ProductList = () => {
   };
 
   const handleAddToWishlist = (productId) => {
-
-    console.log("productId", productId)
     addToWishlistApi(productId)
       .then((response) => {
-        console.log("response", response)
         if (response.data.message === 'Product added to wishlist') {
-          toast.success('Product added to wishlist')
+          toast.success('Product added to wishlist');
+        } else if (response.data.message === 'Product is already in the wishlist') {
+          toast.warning('Product is already in the wishlist');
         }
       })
       .catch((error) => {
-
-        if (error.response.data.message === 'Product is already in the wishlist') {
-          toast.warning('Product is already in the wishlist')
-
-        }
+        console.error('Error adding to wishlist:', error);
       });
   };
 
@@ -103,7 +95,11 @@ const ProductList = () => {
               return a.productName.localeCompare(b.productName);
             }
             return 0;
-          }).map((product) => (
+          })
+          .filter((product) =>
+            product.productName.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+          .map((product) => (
             <Grid item key={product._id} xs={12} sm={6} md={4}>
               <Card>
                 <Link to={`/productview/${product._id}`} className="link-style">
@@ -150,7 +146,7 @@ const ProductList = () => {
           ))}
       </Grid>
     </>
-  )
-}
+  );
+};
 
 export default ProductList;
