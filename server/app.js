@@ -57,6 +57,7 @@ app.get('/search/:searchTerm', Product.searchProducts)
 
 
 app.post('/users/:userId/carts', Cart.addToCart)
+app.delete('/removeitem', Cart.deleteManyFromCart)
 app.delete('/users/carts/:cartId', Cart.deleteFromCart)
 
 app.get('/users/:userId/carts', Cart.displayCart)
@@ -70,8 +71,9 @@ app.delete('/users/wishlist/:Id', Wishlist.deleteWishlist)
 app.post('/users/:userId/orders', Order.createOrder)
 app.get('/users/:userId/orders', Order.getOrderById)
 
-app.post('/users/addaddress', Address.addAddress)
-
+app.post('/users/address', Address.addAddress)
+app.get('/users/address/:userId', Address.getAddress)
+app.delete('/users/address/:_id', Address.removeAddress)
 
 
 app.listen(3000, () => {

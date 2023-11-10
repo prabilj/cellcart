@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import { addProductsApi } from '../../Api/Api';
 
 const AddProduct = () => {
-   const  Navigate = useNavigate()
+    const Navigate = useNavigate()
     const [imageUrl, setImageUrl] = useState()
     const schema = yup.object().shape({
         productName: yup.string().required('Product Name is required'),
@@ -21,6 +21,7 @@ const AddProduct = () => {
         Camera: yup.string().required('Product Camera is required'),
         Battery: yup.string().required('Product Battery is required'),
         Storage: yup.string().required('Product Storage is required'),
+        productCount: yup.number().required('count is requried')
 
     });
 
@@ -61,7 +62,7 @@ const AddProduct = () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            
+
             const response = await axios.post('http://localhost:3000/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -170,16 +171,29 @@ const AddProduct = () => {
                             </div>
 
                         </div>
-                        <div className="input-container">
-                            <label htmlFor="productImage">Product Image:</label>
-                            <input
-                                type="file"
-                                id="productImage"
-                                onChange={handleFileChange}
-                            />
-                            <p className="error-message">{errors.productImage?.message}</p>
-                        </div>
+                        <div className='productDiv'>
+                            <div className="input-container">
+                                <label htmlFor="productImage">Product Image:</label>
+                                <input
+                                    type="file"
+                                    id="productImage"
+                                    onChange={handleFileChange}
+                                />
+                                <p className="error-message">{errors.productImage?.message}</p>
+                            </div>
+                            <div className="input-container">
+                                <label htmlFor="productCount">count:</label>
+                                <input
+                                    type="number"
+                                    inputMode="numeric"
+                                    name="productCount"
+                                    {...register('productCount')}
+                                />
+                                <p className="error-message">{errors.productCount?.message}</p>
+                            </div>
 
+
+                        </div>
                         <button type="submit">Add Product</button>
                     </div>
                 </form>

@@ -9,7 +9,7 @@ import Signup from './components/User/Signup/Signup';
 import OTPVerification from './components/User/Verification/OTPVerification';
 import EnterEmail from './components/User/Verification/EnterEmail';
 import ProductList from './components/User/products/product';
-import PrivateRoutes from './components/protectedRoutes/PrivateRoutes'
+import { PrivateRoutes, AdminPrivateRoutes } from './components/protectedRoutes/PrivateRoutes'
 import ProductView from './components/User/products/ProductView';
 import Wishlist from './components/User/Wishlist/Wishlist';
 import Cart from './components/User/AddCart/Cart';
@@ -24,6 +24,10 @@ import Dashboard from './components/Admin/Dashboard/Dashboard'
 import OrdersPage from './components/Admin/Orders/Orders'
 import ShippingForm from './components/User/Orderdata/ShippingForm/ShippingFrom';
 import UserOrderPage from './components/User/Orderdata/myOrder/Myorder';
+import AboutContactPage from './components/Header/AboutContactPage';
+import NotFound from './components/NotFound';
+import EditProduct from './components/Admin/ProductPage/EditProduct';
+import OrderInvoice from './components/User/Orderdata/Invoice/Invoice';
 
 
 
@@ -31,30 +35,33 @@ function App() {
   return (
     <div >
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path='/verifyOTP' element={<OTPVerification />} />
         <Route path='/emailEnter' element={<EnterEmail />} />
-        <Route path='/productview/:_id' element={<ProductView />} />
-        <Route path='/wishlist' element={<Wishlist />} />
-        <Route path='/cart' element={<Cart />} />
+
         <Route path='/resetpassword' element={<ResetPassword />} />
-        <Route path='/changepassword' element={<ChangePassword />} />
-        <Route path='/editprofile' element={<UserProfile />} />
-        <Route path='/checkout' element={<ShippingForm />} />
-        <Route path='/myorders' element={<UserOrderPage/>}/>
+        <Route path='/about' element={<AboutContactPage />} />
+        <Route path='/editproduct/:ProductId' element={<EditProduct />} />
 
 
 
 
-        <Route path='/sidebar' element={<Sidebar />} />
-        <Route path='/ViewProducts' element={<ViewProducts />} />
-        <Route path='/AddProduct' element={<AddProduct />} />
-        <Route path='/Users' element={<Users />} />
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/orders' element={<OrdersPage />} />
-        
+
+        <Route element={<AdminPrivateRoutes />}>
+
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/sidebar' element={<Sidebar />} />
+          <Route path='/ViewProducts' element={<ViewProducts />} />
+          <Route path='/AddProduct' element={<AddProduct />} />
+          <Route path='/Users' element={<Users />} />
+          <Route path='/orders' element={<OrdersPage />} />
+        </Route>
+
+
 
 
 
@@ -62,11 +69,26 @@ function App() {
 
         <Route element={<PrivateRoutes />}>
           <Route path='/productlist' element={<ProductList />} />
-          {/* <Route path='/productview/:_id' element={<ProductView />} /> */}
-
+          <Route path='/productview/:_id' element={<ProductView />} />
+          <Route path='/wishlist' element={<Wishlist />} />
+          <Route path='/cart' element={<Cart />} />
+          <Route path='/changepassword' element={<ChangePassword />} />
+          <Route path='/editprofile' element={<UserProfile />} />
+          <Route path='/checkout' element={<ShippingForm />} />
+          <Route path='/myorders' element={<UserOrderPage />} />
+          <Route path='/order-invoice' element={<OrderInvoice/>}/>
         </Route>
 
+
+
+
+
+        <Route path='*' element={<NotFound />} />
+
+
+
       </Routes>
+
 
     </div>
   );

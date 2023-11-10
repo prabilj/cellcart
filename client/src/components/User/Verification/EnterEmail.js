@@ -28,6 +28,7 @@ const EmailEntry = () => {
 
     const handleSendOTP = () => {
         const formData = getValues();
+       // console.log("formData-----", formData);
         axios.post('http://localhost:3000/sentOtp', formData)
             .then((response) => {
                 console.log("email response __", response)

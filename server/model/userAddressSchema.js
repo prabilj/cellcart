@@ -6,11 +6,6 @@ const useraddressSchema = new mongoose.Schema({
         ref: 'users',
         required: true,
     },
-    orderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Orders',
-        required: true,
-    },
     fullName: {
         type: String,
         required: true,

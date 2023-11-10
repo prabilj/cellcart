@@ -1,41 +1,104 @@
-import React, { useState } from "react";
-import { useAuth } from '../../../contexts/AuthContexts';
-import './ShippingForm.css';
-import Alert from '@mui/material/Alert';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
-import { createOrderApi } from "../../../Api/Api";
-import { Form } from "react-router-dom";
-const ShippingForm = () => {
-    const { productData } = useAuth();
-    console.log("productData", productData);
+import { useAuth } from '../../../contexts/AuthContexts';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { addAddressApi, createOrderApi, getAddressApi, removeAddressApi, deleteManyFromCartApi } from "../../../Api/Api";
+
+import {
+    Container,
+    Stepper,
+    Step,
+    StepLabel,
+    Button,
+    Typography,
+    FormControl,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+    Grid,
+    TextField,
+    MenuItem,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+} from '@mui/material';
+
+
+const CheckoutPage = () => {
+    const navigate = useNavigate();
+    const [activeStep, setActiveStep] = useState(0);
+    const [selectedAddress, setSelectedAddress] = useState('');
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+    const [showAddAddressForm, setShowAddAddressForm] = useState(false);
+    const [newAddress, setNewAddress] = useState('');
+    const [errors, setErrors] = useState({})
+    const [savedAddresses, setSavedAddresses] = useState([]);
+    const [selectedAddressDetails, setSelectedAddressDetails] = useState([])
     const [formData, setFormData] = useState({
         fullName: "",
         phoneNumber: "",
         address: "",
         city: "",
         country: "",
-        landMark: "",
+        landmark: "",
         postcode: "",
         paymentMethod: "",
     });
+    const { productData } = useAuth();
+    let itemdata = []
+    for (const itemId of productData) {
+        console.log(itemId._id);
+        itemdata.push(itemId._id)
 
-    const [errors, setErrors] = useState({});
-
+    }
     const shippingFormSchema = yup.object().shape({
         fullName: yup.string().required('Full Name is required'),
         phoneNumber: yup.string().required('Phone Number is required'),
         address: yup.string().required('Address is required'),
         city: yup.string().required('City is required'),
         country: yup.string().required('Country is required'),
-        // landMark: yup.string().required('landMark is required'),
         postcode: yup.string().required('Postcode is required'),
-
     });
+
+    const isAddressValid = () => {
+        try {
+            shippingFormSchema.validateSync(formData, { abortEarly: false });
+            return true;
+        } catch (validationErrors) {
+            const errors = {};
+            validationErrors.inner.forEach((error) => {
+                errors[error.path] = error.message;
+            });
+            setErrors(errors);
+            return false;
+        }
+    };
+    const calculateTotal = (productData) => {
+        let total = 0;
+        for (const item of productData) {
+            total += item.productId.price * item.quantity;
+        }
+        console.log("total", total);
+        return total;
+    };
+
+    const [totalAmount, setTotalAmount] = useState(0);
+
+    useEffect(() => {
+        const total = calculateTotal(productData);
+        setTotalAmount(total);
+    }, [productData]);
+
+
+    useEffect(() => {
+        async function fetchSavedAddresses() {
+            const response = await getAddressApi();
+            const addresses = response.data.data.data;
+            console.log("addresses", addresses);
+            setSavedAddresses(addresses);
+        }
+
+        fetchSavedAddresses();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -45,193 +108,393 @@ const ShippingForm = () => {
         });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
 
+    const handleNext = () => {
+        setActiveStep(activeStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep(activeStep - 1);
+    };
+
+    const toggleAddAddressForm = () => {
+
+        setShowAddAddressForm(!showAddAddressForm);
+    };
+
+    const addNewAddress = async () => {
         try {
-            await shippingFormSchema.validate(formData, { abortEarly: false });
-            // Validation passed
-            console.log("Form data is valid:", formData);
-            handleCreateOrder()
+            if (isAddressValid()) {
+                setFormData({
+                    fullName: "",
+                    phoneNumber: "",
+                    address: "",
+                    city: "",
+                    country: "",
+                    landmark: "",
+                    postcode: "",
+                });
 
-            // Handle form submission here, e.g., process the payment
-        } catch (validationErrors) {
-            const errors = {};
+                const response = await addAddressApi(formData);
+                console.log("Address saved:", response.data.saveAddress);
+                setSavedAddresses((prevAddresses) => [...prevAddresses, response.data.saveAddress])
 
-            validationErrors.inner.forEach((error) => {
-                errors[error.path] = error.message;
+                setErrors({});
+                setShowAddAddressForm(false);
+            }
+        } catch (error) {
+            console.error('Error adding a new address:', error);
+        }
+    };
+    const deleteAddress = async (addressId) => {
+        try {
+            // console.log("addressId", addressId);
+            const response = await removeAddressApi(addressId);
+            if (response.status === 200) {
+
+                setSavedAddresses((prevAddresses) =>
+                    prevAddresses.filter((address) => address._id !== addressId)
+                );
+            } else {
+                console.error('Address deletion failed. Response:', response);
+
+            }
+        }
+        catch (error) {
+            console.error('Error deleting the address:', error);
+
+        }
+    };
+    const placeOrder = async (addressId, paymentMethod, productData) => {
+        //console.log("addressId", addressId);
+        //console.log("selectedAddress", selectedAddress);
+        const finalData = {
+            addressId,
+            paymentMethod,
+            orderDetails: productData,
+            totalAmount: totalAmount,
+        };
+        console.log("finalData", finalData);
+        try {
+            const response = await createOrderApi(finalData);
+            const orderId = response.data.order
+
+            const invoiceData = {
+                selectedAddressDetails,
+                paymentMethod,
+                orderDetails: productData,
+                totalAmount: totalAmount,
+                orderId
+
+            }
+            //console.log("invoiceData", invoiceData);
+            // console.log("itemdataitemdata", itemdata)
+            if (response.status === 200)
+                deleteManyFromCartApi(itemdata)
+
+            Swal.fire({
+                title: 'Order Placed!',
+                text: 'Your order has been placed successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                navigate('/order-invoice', { state: { invoiceData } })
+                //navigate('/myorders'); // Update the path to your "My Order" page.
             });
 
-            setErrors(errors);
+        } catch (error) {
+            console.error('Error placing the order:', error);
         }
     };
+    const getStepContent = (step) => {
+        switch (step) {
+            case 0:
+                return (
+                    <>
+                        <Typography variant="h6">Saved Address</Typography>
+                        <FormControl component="fieldset">
+                            <RadioGroup
+                                aria-label="address"
+                                name="address"
+                                value={selectedAddress}
+                                onChange={(e) => {
+                                    setSelectedAddress(e.target.value)
+                                    const selectedAddressDetails = savedAddresses.find((address) => address._id === e.target.value);
+                                    setSelectedAddressDetails(selectedAddressDetails)
+                                }
+                                }
+                            >
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Select</TableCell>
+                                                <TableCell>Full Name</TableCell>
+                                                <TableCell>Address</TableCell>
+                                                <TableCell>City</TableCell>
+                                                <TableCell>country</TableCell>
+                                                <TableCell>Zip Code</TableCell>
+                                                <TableCell>Action</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {savedAddresses.map((address) => (
+                                                <TableRow key={address._id}>
+                                                    <TableCell>
+                                                        <Radio value={address._id} />
+                                                    </TableCell>
+                                                    <TableCell>{address.fullName}</TableCell>
+                                                    <TableCell>{address.address}</TableCell>
+                                                    <TableCell>{address.city}</TableCell>
+                                                    <TableCell>{address.country}</TableCell>
+                                                    <TableCell>{address.postcode}</TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="secondary"
+                                                            onClick={() => deleteAddress(address._id)}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </RadioGroup>
+                        </FormControl>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                setShowAddAddressForm(!showAddAddressForm);
+                            }}
+                        >
+                            {showAddAddressForm ? 'Cancel' : 'Add New Address'}
+                        </Button>
 
-    const calculateTotal = () => {
-        let total = 0;
-        for (const item of productData) {
-            total += item.productId.price || item.price * item.quantity;
-        }
-        formData.totalAmount = total.toFixed(2)
-        return total.toFixed(2);
-    };
-    const handleCreateOrder = async () => {
-        formData.orderDetails = productData
-        console.log("formData", formData);
-        const response = await createOrderApi(formData)
-        console.log("response-----", response);
+                        {showAddAddressForm && (
 
-    }
-    return (
-        <>
-            {productData && productData.length > 0 ? (
-                <Container maxWidth="lg">
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
-                            <Paper elevation={3}>
-                                <form onSubmit={handleSubmit}>
-                                    <h2>Shipping Address</h2>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={6}>
-                                            <TextField
-                                                fullWidth
-                                                label="Full Name"
-                                                name="fullName"
-                                                value={formData.fullName}
-                                                onChange={handleInputChange}
-                                                error={Boolean(errors.fullName)}
-                                                helperText={errors.fullName}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <TextField
-                                                fullWidth
-                                                label="Phone Number"
-                                                name="phoneNumber"
-                                                value={formData.phoneNumber}
-                                                onChange={handleInputChange}
-                                                error={Boolean(errors.phoneNumber)}
-                                                helperText={errors.phoneNumber}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <TextField
-                                                fullWidth
-                                                label="Address"
-                                                name="address"
-                                                value={formData.address}
-                                                onChange={handleInputChange}
-                                                error={Boolean(errors.address)}
-                                                helperText={errors.address}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <TextField
-                                                fullWidth
-                                                label="City"
-                                                name="city"
-                                                value={formData.city}
-                                                onChange={handleInputChange}
-                                                error={Boolean(errors.city)}
-                                                helperText={errors.city}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <TextField
-                                                fullWidth
-                                                label="Country"
-                                                name="country"
-                                                value={formData.country}
-                                                onChange={handleInputChange}
-                                                error={Boolean(errors.country)}
-                                                helperText={errors.country}
-                                            >
-                                                <option value="" disabled>
-                                                    Select Country
-                                                </option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Other">Other</option>
-                                            </TextField>
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <TextField
-                                                fullWidth
-                                                label="landMark"
-                                                name="landMark"
-                                                value={formData.landMark}
-                                                onChange={handleInputChange}
-                                                error={Boolean(errors.landMark)}
-                                                helperText={errors.landMark}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <TextField
-                                                fullWidth
-                                                label="Postcode"
-                                                name="postcode"
-                                                value={formData.postcode}
-                                                onChange={handleInputChange}
-                                                error={Boolean(errors.postcode)}
-                                                helperText={errors.postcode}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <TextField
-                                                fullWidth
-                                                select
-                                                label="Select Payment Method"
-                                                name="paymentMethod"
-                                                value={formData.paymentMethod}
-                                                onChange={handleInputChange}
-                                            >
-                                                <option value="online_payment">online payment</option>
-
-                                                <option value="COD">COD</option>
-                                            </TextField>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                type="submit"
-                                                fullWidth
-                                            >
-                                                Place Order
-                                            </Button>
-                                        </Grid>
+                            <form >
+                                <Typography variant="h5">Shipping Address</Typography>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Full Name"
+                                            name="fullName"
+                                            value={formData.fullName}
+                                            onChange={handleInputChange}
+                                            error={Boolean(errors.fullName)}
+                                            helperText={errors.fullName}
+                                        />
                                     </Grid>
-                                </form>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Paper elevation={3}>
-                                <h2>Order Details</h2>
-                                <ul>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Phone Number"
+                                            name="phoneNumber"
+                                            value={formData.phoneNumber}
+                                            onChange={handleInputChange}
+                                            error={Boolean(errors.phoneNumber)}
+                                            helperText={errors.phoneNumber}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Address"
+                                            name="address"
+                                            value={formData.address}
+                                            onChange={handleInputChange}
+                                            error={Boolean(errors.address)}
+                                            helperText={errors.address}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} sm={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="City"
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleInputChange}
+                                            error={Boolean(errors.city)}
+                                            helperText={errors.city}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} sm={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="Country"
+                                            name="country"
+                                            select
+                                            value={formData.country}
+                                            onChange={handleInputChange}
+                                            error={Boolean(errors.country)}
+                                            helperText={errors.country}
+                                        >
+                                            <MenuItem value="" disabled>
+                                                Select Country
+                                            </MenuItem>
+                                            <MenuItem value="India">India</MenuItem>
+                                            <MenuItem value="United States">United States</MenuItem>
+                                            <MenuItem value="Canada">Canada</MenuItem>
+                                            <MenuItem value="Other">Other</MenuItem>
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="Landmark"
+                                            name="landmark"
+                                            value={formData.landmark}
+                                            onChange={handleInputChange}
+                                            error={Boolean(errors.landmark)}
+                                            helperText={errors.landmark}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Postcode"
+                                            name="postcode"
+                                            value={formData.postcode}
+                                            onChange={handleInputChange}
+                                            error={Boolean(errors.postcode)}
+                                            helperText={errors.postcode}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Button variant="contained" color="primary" onClick={addNewAddress}>
+                                    Save Address
+                                </Button>
+                            </form>
+
+                        )}
+                        {selectedAddress ? (
+                            <Button variant="contained" color="primary" onClick={handleNext}>
+                                Next
+                            </Button>
+                        ) : null}
+                    </>
+                )
+            case 1:
+                return (
+                    <div>
+                        <Typography variant="h6">Product Details</Typography>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Image</TableCell>
+                                        <TableCell>Product Name</TableCell>
+                                        <TableCell>Price</TableCell>
+                                        <TableCell>Quantity</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
                                     {productData.map((item, index) => (
-                                        <li key={index}>
-                                            <img
-                                                src={item.productId.pimage}
-                                                alt={item.productId.productname}
-                                                width="100"
-                                                height="100"
-                                            />
-                                            {item.productId.productName} - ${item.productId.price} - Quantity: {item.quantity}
-                                        </li>
+                                        <TableRow key={index}>
+                                            <TableCell>
+                                                <img
+                                                    src={item.productId.pimage}
+                                                    alt={item.productId.productname}
+                                                    width="100"
+                                                    height="100"
+                                                />
+                                            </TableCell>
+                                            <TableCell>{item.productId.productName}</TableCell>
+                                            <TableCell>${item.productId.price}</TableCell>
+                                            <TableCell>{item.quantity}</TableCell>
+                                        </TableRow>
                                     ))}
-                                    <p>Total: ${calculateTotal()}</p>
-                                </ul>
-                            </Paper>
-                        </Grid>
-                    </Grid>
-                </Container>
-            ) : (
-                <Alert error="info">page not found</Alert>
-            )}
-        </>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Typography variant="h6">Total: ${totalAmount.toFixed(2)}</Typography>
+                        <Button variant="contained" color="primary" onClick={handleNext}>
+                            Continue to Payment
+                        </Button>
+                    </div>
 
+                );
+            case 2:
+                return (
+                    <div>
+                        <Typography variant="h6">Payment Method</Typography>
+                        <FormControl component="fieldset">
+                            <RadioGroup
+                                aria-label="paymentMethod"
+                                name="paymentMethod"
+                                value={selectedPaymentMethod}
+                                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                            >
+                                <FormControlLabel
+                                    value="creditCard"
+                                    control={<Radio />}
+                                    label="Credit Card"
+                                />
+                                <FormControlLabel
+                                    value="paypal"
+                                    control={<Radio />}
+                                    label="PayPal"
+                                />
+                                <FormControlLabel
+                                    value="bankTransfer"
+                                    control={<Radio />}
+                                    label="Bank Transfer"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                        <Button variant="contained" color="primary"
+                            onClick={() => placeOrder(selectedAddress, selectedPaymentMethod, productData)}>
+                            Place Order
+                        </Button>
+                    </div>
+                );
+            default:
+                return 'Unknown step';
+        }
+    };
+
+
+
+
+
+
+    return (
+        <Container>
+            <Stepper activeStep={activeStep} alternativeLabel orientation="horizontal">
+                <Step key="Address">
+                    <StepLabel>Address</StepLabel>
+                </Step>
+                <Step key="Product Details">
+                    <StepLabel>Product Details</StepLabel>
+                </Step>
+                <Step key="Payment Method">
+                    <StepLabel>Payment Method</StepLabel>
+                </Step>
+            </Stepper>
+            <div>
+                {activeStep === 3 ? (
+                    <div>
+                        <Typography variant="h6">Thank you for your order!</Typography>
+                    </div>
+                ) : (
+                    <div>{getStepContent(activeStep)}</div>
+                )}
+                <div>
+                    {activeStep !== 0 && (
+                        <Button onClick={handleBack}>Back</Button>
+                    )}
+                </div>
+            </div>
+        </Container>
     );
-
 };
 
-export default ShippingForm;
+
+
+export default CheckoutPage

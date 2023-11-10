@@ -1,0 +1,50 @@
+/* Orders.css */
+
+/* Style for the entire page */
+.orders-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Make the page take up the full viewport height */
+}
+
+/* Style for the Header component */
+/* Adjust the styles as needed for your Header component */
+/* For example, you can set a fixed height, background color, text color, etc. */
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Style for the container that holds Sidebar and Orders content */
+.orders-container {
+    display: flex;
+    flex: 1; /* Allow the container to take up available space */
+}
+
+/* Style for the Sidebar component */
+/* Adjust the styles based on your Sidebar component's requirements */
+.sidebar {
+    flex: 1;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+/* Style for the Orders content */
+.orders-content {
+    flex: 2; /* Adjust the flex value based on your desired layout */
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+/* Responsive design for mobile screens */
+@media screen and (max-width: 768px) {
+    .orders-container {
+        flex-direction: column;
+    }
+    .sidebar, .orders-content {
+        flex: 1;
+    }
+}

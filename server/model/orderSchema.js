@@ -30,6 +30,11 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    addressId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'usersAddress',
+        required : true
+    },
     orderDetails: [
         {
             productId: {

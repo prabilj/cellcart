@@ -1,0 +1,67 @@
+/* EditProduct.css */
+
+/* Define a class for the form rows */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Define a class for form groups (each column) */
+.form-group {
+    flex: 1;
+    margin: 8px;
+}
+
+/* Style the image */
+.card-media img {
+    width: 100%;
+    /* Make the image full width */
+}
+
+/* Optional: Add some space around the image */
+.card-media {
+    margin: 8px 0;
+}
+/* EditProduct.css */
+.edit-product-card {
+    margin: 20px; /* Add margin to create space around the card */
+    padding: 20px; /* Add padding inside the card */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+    border-radius: 8px; /* Add rounded corners */
+    background-color: #fff; /* Set the background color to white */
+  
+    /* Style the form elements inside the card */
+    .MuiTextField-root {
+      margin-bottom: 16px; /* Add space between form elements */
+    }
+  
+    .MuiInputBase-input {
+      padding: 12px; /* Adjust input element padding */
+    }
+  
+    /* Style the file input */
+    input[type="file"] {
+      margin-top: 16px; /* Add space above the file input */
+    }
+  
+    /* Style the "Remove Image" button */
+    .MuiCardActions-root {
+      display: flex;
+      justify-content: center;
+    }
+  
+    /* Style the loading and error messages */
+    p {
+      margin: 8px 0;
+      color: red; /* Change the color to red for error messages */
+    }
+  }
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    flex-basis: calc(50% - 8px); /* Adjust to make two items fit in one row */
+  }  

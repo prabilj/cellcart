@@ -1,17 +1,24 @@
 import { Navigate, Outlet } from 'react-router-dom'
-// import { useAuth } from '../contexts/AuthContexts';
-// import { useContext } from 'react';
 
-const PrivateRoutes = () => {
+export const PrivateRoutes = () => {
 
-    // const { token } = useAuth()
-    // let auth = { 'token': false }
-    let utoken = localStorage.getItem("userToken")
+    const utoken = localStorage.getItem("userToken")
+    const isadmin = localStorage.getItem("isadmin")
+    console.log("isadmin", isadmin);
+
 
     return (
-        utoken ? <Outlet /> : <Navigate to='/login' />
+        utoken && (isadmin == "false") ? (<Outlet />) : (<Navigate to='/login' />)
+    )
+}
+export const AdminPrivateRoutes = () => {
+
+    const utoken = localStorage.getItem("userToken")
+    const isadmin = localStorage.getItem("isadmin")
+
+    return (
+        utoken && (isadmin == "true") ? (<Outlet />) : (<Navigate to='/login' />)
     )
 }
 
 
-export default PrivateRoutes

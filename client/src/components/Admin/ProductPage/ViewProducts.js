@@ -4,10 +4,13 @@ import './ViewProduct.css';
 import Sidebar from '../Sidebar/Sidebar';
 import { CardMedia } from '@mui/material'
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const ViewProducts = () => {
   // Sample product data
+  const navigate = useNavigate()
   const [products, setProducts] = useState([]);
+
   useEffect(() => {
     displayProductsApi()
       .then((response) => {
@@ -20,9 +23,10 @@ const ViewProducts = () => {
 
   }, [])
   // Function to update a product by ID
-  const updateProduct = (id) => {
-    // Implement your update logic here
-    alert(`Update product with ID ${id}`);
+  const updateProduct = (productId) => {
+    console.log("productId.........", productId)
+    navigate(`/editproduct/${productId}`)
+
   };
 
   // Function to delete a product by ID
@@ -57,7 +61,7 @@ const ViewProducts = () => {
         <h1 className="page-title">Products</h1>
         <div className="product-list">
           {products.map((product) => (
-            <div key={product.id} className="product-card">
+            <div key={product._id} className="product-card">
               {/* <div>
                 <CardMedia sx={{ objectFit: 'contain' }}
 
@@ -77,7 +81,7 @@ const ViewProducts = () => {
                 <p className="product-price">Price: ${product.price.toFixed(2)}</p>
               </div>
               <div className="buttoncontainer">
-                <button className="update-button" onClick={() => updateProduct(product.id)}>Update</button>
+              <button className="update-button" onClick={() => navigate(`/editproduct/${product._id}`)}>Update</button>
                 <button className="delete-button" onClick={() => deleteProduct(product._id)}>Delete</button>
               </div>
             </div>

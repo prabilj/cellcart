@@ -40,6 +40,7 @@ const dislayProducts = async (request, response) => {
 }
 const getProduct = async (request, response) => {
     try {
+        console.log("request", request.params);
         const display = await Product.findOne({ _id: request.params._id });
         console.log(request.params._id)
         if (display) {
@@ -76,7 +77,7 @@ const deleteProduct = async (request, response) => {
 }
 const updateProduct = async (req, res) => {
     try {
-        console.log(req.body)
+        console.log("req.body",req.body)
         const parms = req.params.productId
         const updatedDetails = req.body
         const updatedProduct = await Product.findByIdAndUpdate(parms, { $set: updatedDetails }, { new: true });

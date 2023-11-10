@@ -25,6 +25,9 @@ const productSchema = new mongoose.Schema({
     Description: {
         type: String
     },
+    productCount:{
+     type:Number
+    },
 
     price: { type: Number },
     pimage: { type: String }

@@ -98,9 +98,9 @@ const NavigationBar = () => {
                     <Box flexGrow={1} />
                     <Button color="inherit" component={Link} to="/cart">
                         <IconButton color="inherit">
-                            <Badge badgeContent={cartCount} color="customcolor">
+                            {/* <Badge badgeContent={cartCount} color="customcolor"> */}
                                 <ShoppingCartIcon />
-                            </Badge>
+                            {/* </Badge> */}
 
                         </IconButton>
                     </Button>

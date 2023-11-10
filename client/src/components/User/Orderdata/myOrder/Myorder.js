@@ -18,6 +18,7 @@ const UserOrderPage = () => {
         const fetchData = async () => {
             try {
                 const response = await displayorderByIdApi();
+                console.log("response........", response);
                 setOrders(response.data.data.orders);
             } catch (error) {
                 console.error(error);
@@ -52,7 +53,7 @@ const UserOrderPage = () => {
                             {orders.map((order) => (
                                 <TableRow key={order._id}>
                                     <TableCell>{order.orderID}</TableCell>
-                                    <TableCell>{moment(order.date).format('DD MMM YYYY')}</TableCell>
+                                    <TableCell>{moment(order.createdAt).format('DD MMM YYYY')}</TableCell>
                                     <TableCell>
                                         {order.orderDetails.map((orderDetail) => (
                                             <div key={orderDetail.productId._id}>

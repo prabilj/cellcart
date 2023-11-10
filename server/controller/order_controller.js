@@ -1,18 +1,19 @@
+const { Long } = require('mongodb');
 const Order = require('../model/orderSchema')
 const createOrder = async (req, res) => {
     try {
         const { userId } = req.params
-        // console.log(userId)
-        const { totalAmount, orderDetails, paymentMethod } = req.body;
-
+        const { totalAmount, orderDetails, paymentMethod, addressId } = req.body;
+       // console.log("orderDetails", orderDetails);
 
         const newOrder = new Order({
             userId,
             totalAmount,
             orderDetails,
-            paymentMethod
+            paymentMethod,
+            addressId
         });
-
+        //console.log("newOrder", newOrder);
 
         await newOrder.save();
 
@@ -43,6 +44,7 @@ const getOrders = async (req, res) => {
 const getOrderById = async (req, res) => {
     try {
         const { userId } = req.params
+        i
         const orders = await Order.find({ userId }).populate('orderDetails.productId')
         res.json({
             message: "Order retrieved successfully",

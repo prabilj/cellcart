@@ -51,6 +51,31 @@ const deleteFromCart = async (req, res) => {
         res.status(500).json({ message: 'Error removing item from cart' });
     }
 }
+
+const deleteManyFromCart = async (req, res) => {
+    const itemIds = req.body
+    console.log("itemIds", req.body);
+
+    try {
+        // Delete cart items by itemIds
+        const deleteResult = await Cart.deleteMany({ _id: { $in: itemIds } });
+
+        if (deleteResult.deletedCount > 0) {
+            console.log(`${deleteResult.deletedCount} items removed from cart.`);
+            return res.status(200).json({ message: 'Items removed from cart' });
+        } else {
+            console.log('No matching cart entries found.');
+            return res.status(404).json({ message: 'No matching cart entries found' });
+        }
+    } catch (error) {
+        console.error('Error removing items from cart:', error);
+        res.status(500).json({ message: 'Error removing items from cart' });
+    }
+};
+
+
+
+
 const displayCart = async (request, response) => {
 
     try {
@@ -100,6 +125,7 @@ const updateQuantity = async (req, res) => {
 
 
 module.exports.deleteFromCart = deleteFromCart;
+module.exports.deleteManyFromCart = deleteManyFromCart
 module.exports.addToCart = addToCart;
 module.exports.displayCart = displayCart;
 module.exports.updateQuantity = updateQuantity;

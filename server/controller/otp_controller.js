@@ -8,8 +8,11 @@ const Password = process.env.EMAIL_PASS;
 
 // Send OTP to user's email
 const sendOTP = async (req, res) => {
-    
+
     const email = req.email || (req.body && req.body.email);
+    const invoice = req.body && req.body.invoice;
+    console.log(req.body);
+
     console.log("email", email);
     if (!email) {
         return res.status(400).json({ message: 'Email is required' });

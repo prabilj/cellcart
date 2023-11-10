@@ -103,6 +103,20 @@ const ProductView = () => {
         console.error('Error adding to cart:', error);
       });
   };
+  const handleBuyItem = () => {
+    console.log("productCount", productsDetails.productCount);
+    // if (productsDetails.productCount > 0) {
+    navigate('/checkout');
+    cart([details]);
+    // } else {
+    //   Swal.fire({
+    //     title: 'Out of Stock',
+    //     text: 'This product is currently out of stock.',
+    //     icon: 'error',
+    //     confirmButtonText: 'OK'
+    //   });
+    // }
+  };
 
 
   return (
@@ -134,11 +148,7 @@ const ProductView = () => {
                 variant="contained"
                 size='large'
                 style={{ backgroundColor: '#563517', color: 'white', marginRight: "100px" }}
-                onClick={() => {
-                  navigate('/checkout');
-                  cart([details])
-
-                }}
+                onClick={handleBuyItem}
               >
                 Buy
               </Button>

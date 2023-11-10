@@ -24,6 +24,8 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('price');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(5); // Change this based on the number of products you want per page
 
   useEffect(() => {
     displayProductsApi()
@@ -63,6 +65,26 @@ const ProductList = () => {
       });
   };
 
+  // Pagination Logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products
+    .sort((a, b) => {
+      if (sortBy === 'price') {
+        return a.price - b.price;
+      } else if (sortBy === 'name') {
+        return a.productName.localeCompare(b.productName);
+      }
+      return 0;
+    })
+    .filter((product) =>
+      product.productName.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <NavigationBar />
@@ -87,64 +109,67 @@ const ProductList = () => {
         </FormControl>
       </div>
       <Grid container spacing={2} className="productContainer">
-        {products
-          .sort((a, b) => {
-            if (sortBy === 'price') {
-              return a.price - b.price;
-            } else if (sortBy === 'name') {
-              return a.productName.localeCompare(b.productName);
-            }
-            return 0;
-          })
-          .filter((product) =>
-            product.productName.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-          .map((product) => (
-            <Grid item key={product._id} xs={12} sm={6} md={4}>
-              <Card>
-                <Link to={`/productview/${product._id}`} className="link-style">
-                  <CardMedia
-                    sx={{ objectFit: 'contain' }}
-                    component="img"
-                    alt={product.productName}
-                    height="140"
-                    style={{ padding: '15px' }}
-                    image={product.pimage}
-                    title={product.productName}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      {product.productName}
-                    </Typography>
-                    <Typography variant="h6" color="primary">
-                      ${product.price}
-                    </Typography>
-                  </CardContent>
-                </Link>
-                <CardActions>
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: '#563517', color: 'white' }}
-                    onClick={() => {
-                      handleAddToCart(product._id);
-                    }}
-                  >
-                    Add to Cart
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    style={{ color: '#563517', borderColor: '#563517' }}
-                    onClick={() => {
-                      handleAddToWishlist(product._id);
-                    }}
-                  >
-                    Add to Wishlist
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+        {currentProducts.map((product) => (
+          <Grid item key={product._id} xs={12} sm={6} md={4}>
+            <Card>
+              <Link to={`/productview/${product._id}`} className="link-style">
+                <CardMedia
+                  sx={{ objectFit: 'contain' }}
+                  component="img"
+                  alt={product.productName}
+                  height="140"
+                  style={{ padding: '15px' }}
+                  image={product.pimage}
+                  title={product.productName}
+                />
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    {product.productName}
+                  </Typography>
+                  <Typography variant="h6" color="primary">
+                    ${product.price}
+                  </Typography>
+                </CardContent>
+              </Link>
+              <CardActions>
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: '#563517', color: 'white' }}
+                  onClick={() => {
+                    handleAddToCart(product._id);
+                  }}
+                >
+                  Add to Cart
+                </Button>
+                <Button
+                  variant="outlined"
+                  style={{ color: '#563517', borderColor: '#563517' }}
+                  onClick={() => {
+                    handleAddToWishlist(product._id);
+                  }}
+                >
+                  Add to Wishlist
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
+
+      {/* Pagination */}
+      <div className="pagination">
+        <ul className="pagination-list">
+          {Array.from({ length: Math.ceil(products.length / productsPerPage) }).map(
+            (_, index) => (
+              <li key={index} className="pagination-item">
+                <button onClick={() => paginate(index + 1)} className="pagination-link">
+                  {index + 1}
+                </button>
+              </li>
+            )
+          )}
+        </ul>
+      </div>
     </>
   );
 };

@@ -1,0 +1,13 @@
+.cardStyle {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #2196F3 30%, #21CBF3 90%);
+    border-radius: 10px;
+  }
+  
+  .imageStyle {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+  }
+  
