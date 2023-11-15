@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { updateQuantityApi, removeFromCartApi } from '../../Api/Api';
 import './Cart.css';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import RemoveIcon from '@mui/icons-material/Remove';
 import axios from 'axios';
 import NavigationBar from '../../nav/NavigationBar';
-import Loader from '../products/Loader';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContexts'
+import Footer from '../../Header/Footer';
 
 const Cart = () => {
     const { cart } = useAuth();
@@ -78,7 +78,7 @@ const Cart = () => {
             <NavigationBar />
             <div className="cart-container">
                 {loading ? (
-                    <Loader />
+                    <CircularProgress />
                 ) : (
                     <>
                         <h1 className="cart-header">Cart</h1>
@@ -95,7 +95,7 @@ const Cart = () => {
                                                     <p>{item.productId.productName}</p>
                                                     <p>${item.productId.price}</p>
                                                 </div>
-                                                <p>Total: ${calculateTotal(item)}</p>
+                                                <p>Total: ${item.productId.price * item.quantity}</p>
                                             </div>
 
                                             <div className='cart-quantity'>
@@ -129,7 +129,7 @@ const Cart = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className='checkout'>
+                                <div className='checkout' style={{ marginBottom: '20px' }}>
                                     <h3>Total: ${calculateTotal()}</h3>
                                     <Button
                                         className='checkout-button'
@@ -147,11 +147,16 @@ const Cart = () => {
                                     </Button>
 
                                 </div>
+
                             </>
                         )}
+
                     </>
+
                 )}
+
             </div>
+            <Footer style={{ marginBottom: '20px' }} />
         </>
     );
 };

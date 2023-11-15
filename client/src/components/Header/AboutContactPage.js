@@ -3,6 +3,7 @@ import { Container, Tabs, Tab, Card, CardContent, Typography, Grid } from '@mui/
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import Header from './Header'
 
 const AboutContactPage = () => {
   const [selectedTab, setSelectedTab] = React.useState(0);
@@ -15,7 +16,10 @@ const AboutContactPage = () => {
   const contactImageURL = 'https://as2.ftcdn.net/v2/jpg/06/26/17/69/1000_F_626176936_buQqfal5yQKdxCrGDmXBglegUpvP2tCM.jpg'; 
 
   return (
+    <>
+     <Header/>
     <Container>
+     
       <Typography variant="h4" gutterBottom>
         About & Contact
       </Typography>
@@ -81,7 +85,9 @@ const AboutContactPage = () => {
         </CardContent>
       </Card>
     </Container>
+    </>
   );
+
 };
 
 export default AboutContactPage;

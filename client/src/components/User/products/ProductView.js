@@ -12,6 +12,7 @@ import { useAuth } from '../../contexts/AuthContexts'
 import Swal from 'sweetalert2'
 import './ProductView.css';
 import Loader from './Loader';
+import Footer from '../../Header/Footer';
 
 const ProductView = () => {
   const navigate = useNavigate();
@@ -166,6 +167,8 @@ const ProductView = () => {
           </>
         )}
       </div>
+      
+      <Footer/>
     </>
   );
 }

@@ -2,9 +2,29 @@
     text-decoration: none;
     /* Remove underline */
     color: inherit;
-    /* Inherit the text color */
+}
+
+
+.search-and-filters {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-evenly; */
+    padding: 10px;
+    background-color: #ffff;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.search-and-filters>* {
+    margin-right: 10px;
 }
 
 .productContainer {
-    padding: 25px
+    margin-top: 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }

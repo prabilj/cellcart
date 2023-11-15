@@ -65,16 +65,16 @@ const EditProduct = () => {
         setLoading(true);
         setError(null);
         try {
-            if(imageUrl!==""){
-            data.pimage = imageUrl;
+            if (imageUrl !== "") {
+                data.pimage = imageUrl;
             }
             const response = await updateProductApi(ProductId, data);
-            if(response.status==200){
+            if (response.status == 200) {
 
-            
-            console.log("response---", response)
-            alert('Product updated successfully');
-            navigate('/ViewProducts')
+
+                console.log("response---", response)
+                alert('Product updated successfully');
+                navigate('/ViewProducts')
             }
 
         } catch (error) {
@@ -120,6 +120,7 @@ const EditProduct = () => {
                                         placeholder="Product Name"
                                         error={!!errors.productName}
                                         helperText={errors.productName?.message}
+                                        variant="outlined"
                                     />
                                 </div>
                                 <div className="form-group">

@@ -7,7 +7,6 @@ import {
   CardContent,
   CardActions,
   CardMedia,
-  Button,
   Typography,
   Grid,
   TextField,
@@ -15,27 +14,51 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Slider,
+  Pagination
 } from '@mui/material';
 import NavigationBar from '../../nav/NavigationBar';
+
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from '../../Header/Footer';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('price');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(5); // Change this based on the number of products you want per page
+  const [productsPerPage] = useState(6);
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
+  const [brandFilter, setBrandFilter] = useState('');
+
+  const brands = ["Google", "ASUS", "Lg", "Xiaomi", "OnePlus"];
 
   useEffect(() => {
-    displayProductsApi()
-      .then((response) => {
-        setProducts(response.data.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching products:', error);
+    fetchData();
+  }, [searchQuery, sortBy, minPrice, maxPrice, currentPage]);
+
+  const fetchData = async () => {
+    try {
+      const response = await displayProductsApi({
+        search: searchQuery,
+        sortBy: sortBy,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        brandFilter: brandFilter
       });
-  }, []);
+      setProducts(response.data.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   const handleAddToCart = (productId) => {
     addToCartApi(productId)
@@ -65,6 +88,29 @@ const ProductList = () => {
       });
   };
 
+  const handleFilterDialogOpen = () => {
+    setIsFilterDialogOpen(true);
+  };
+
+  const handleFilterDialogClose = () => {
+    setIsFilterDialogOpen(false);
+  };
+
+  const handleFilterSubmit = () => {
+    fetchData()
+
+    setIsFilterDialogOpen(false);
+  };
+
+  const handleReset = () => {
+
+    setIsFilterDialogOpen(false);
+    setBrandFilter('');
+    setMinPrice('');
+    setMaxPrice('');
+    fetchData()
+  };
+
   // Pagination Logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -82,7 +128,6 @@ const ProductList = () => {
     )
     .slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -107,6 +152,73 @@ const ProductList = () => {
             <MenuItem value="name">Name</MenuItem>
           </Select>
         </FormControl>
+        <Button
+          variant="outlined"
+          onClick={handleFilterDialogOpen}
+          style={{ color: '#563517' }}
+        >
+          Filter
+        </Button>
+
+        <Dialog open={isFilterDialogOpen} onClose={handleFilterDialogClose}>
+          <DialogTitle style={{ backgroundColor: '#563517', color: '#fff', marginBottom: '20px', padding: '15px' }}>
+            Filter Options
+          </DialogTitle>
+          <DialogContent>
+            <FormControl variant="outlined" fullWidth style={{ marginBottom: '20px' }}>
+              <InputLabel shrink={!!brandFilter} style={{ color: '#563517' }}>
+                Select Brand
+              </InputLabel>
+              <Select
+                label="Brand"
+                value={brandFilter}
+                onChange={(e) => setBrandFilter(e.target.value)}
+                variant="outlined"
+              >
+                <MenuItem value="" disabled>
+                  Select Brand
+                </MenuItem>
+                {brands.map((brand) => (
+                  <MenuItem key={brand} value={brand}>
+                    {brand}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Slider
+              value={[minPrice, maxPrice]}
+              onChange={(_, newValue) => {
+                setMinPrice(newValue[0]);
+                setMaxPrice(newValue[1]);
+              }}
+              valueLabelDisplay="auto"
+              aria-labelledby="range-slider"
+              min={500}
+              max={10000}
+              style={{ marginBottom: '20px' }}
+            />
+            {/* Add more filter options as needed */}
+          </DialogContent>
+          <DialogActions style={{ padding: '15px' }}>
+            <Button
+              onClick={handleReset}
+              color="secondary"
+              variant="outlined"
+              style={{ marginRight: '10px' }}
+            >
+              Reset
+            </Button>
+            <Button
+              onClick={handleFilterSubmit}
+              color="primary"
+              variant="contained"
+              style={{ backgroundColor: '#563517' }} // Change this to the desired color
+            >
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       </div>
       <Grid container spacing={2} className="productContainer">
         {currentProducts.map((product) => (
@@ -135,18 +247,14 @@ const ProductList = () => {
                 <Button
                   variant="contained"
                   style={{ backgroundColor: '#563517', color: 'white' }}
-                  onClick={() => {
-                    handleAddToCart(product._id);
-                  }}
+                  onClick={() => handleAddToCart(product._id)}
                 >
                   Add to Cart
                 </Button>
                 <Button
                   variant="outlined"
                   style={{ color: '#563517', borderColor: '#563517' }}
-                  onClick={() => {
-                    handleAddToWishlist(product._id);
-                  }}
+                  onClick={() => handleAddToWishlist(product._id)}
                 >
                   Add to Wishlist
                 </Button>
@@ -157,19 +265,16 @@ const ProductList = () => {
       </Grid>
 
       {/* Pagination */}
-      <div className="pagination">
-        <ul className="pagination-list">
-          {Array.from({ length: Math.ceil(products.length / productsPerPage) }).map(
-            (_, index) => (
-              <li key={index} className="pagination-item">
-                <button onClick={() => paginate(index + 1)} className="pagination-link">
-                  {index + 1}
-                </button>
-              </li>
-            )
-          )}
-        </ul>
+      <div className="pagination"style={{ marginBottom: '20px' }}>
+        <Pagination
+          count={Math.ceil(products.length / productsPerPage)}
+          page={currentPage}
+          onChange={(event, value) => paginate(value)}
+          color="primary"
+          shape="rounded"
+        />
       </div>
+      <Footer style={{ marginTop: '20px' }}/>
     </>
   );
 };

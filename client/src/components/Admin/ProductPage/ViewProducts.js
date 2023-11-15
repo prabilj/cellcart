@@ -7,7 +7,6 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
 const ViewProducts = () => {
-  // Sample product data
   const navigate = useNavigate()
   const [products, setProducts] = useState([]);
 
@@ -22,13 +21,6 @@ const ViewProducts = () => {
       });
 
   }, [])
-  // Function to update a product by ID
-  const updateProduct = (productId) => {
-    console.log("productId.........", productId)
-    navigate(`/editproduct/${productId}`)
-
-  };
-
   // Function to delete a product by ID
   const deleteProduct = async (_id) => {
     // Show a confirmation dialog using Swal
@@ -62,7 +54,7 @@ const ViewProducts = () => {
         <div className="product-list">
           {products.map((product) => (
             <div key={product._id} className="product-card">
-              {/* <div>
+              <div>
                 <CardMedia sx={{ objectFit: 'contain' }}
 
 
@@ -74,7 +66,7 @@ const ViewProducts = () => {
                   title={product.productName}
                 />
                 
-              </div> */}
+              </div>
               <div>
                 <h3 className="product-name">{product.productName}</h3>
                 <p className="product-description">{product.Description}</p>

@@ -103,10 +103,16 @@ export const deleteUsersApi = async (userId) => {
   return response.data
 }
 //products
-export const displayProductsApi = async () => {
-  const response = await axios.get(`${baseUrl}/products`)
-  return response
-}
+export const displayProductsApi = async (params) => {
+  try {
+    const response = await axios.get(`${baseUrl}/products`, { params });
+    return response;
+  } catch (error) {
+    console.error('Error fetching/displaying products:', error);
+    throw error;
+  }
+};
+
 export const displayProductByIdApi = async (productId) => {
   const response = await axios.get(`${baseUrl}/products/${productId}`)
   return response
@@ -132,6 +138,7 @@ export const displayOrderApi = async () => {
   return response
 }
 export const displayorderByIdApi = async () => {
+  console.log("inside the orders page api");
   const response = await axios.get(`${baseUrl}/users/${userId}/orders`)
   return response
 }

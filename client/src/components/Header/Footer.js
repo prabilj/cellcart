@@ -11,7 +11,13 @@ const Footer = () => {
             color: 'orange',
         },
     };
-   
+
+    const linkStyle = {
+        textDecoration: 'none', // Remove underline from links
+        color: 'inherit', // Use the default color
+        margin: '0 20px',
+    };
+
     return (
         <AppBar position="static" style={{ backgroundColor: '#563517', color: 'white' }}>
             <Toolbar position="absolute">
@@ -23,16 +29,16 @@ const Footer = () => {
                             </Typography>
                         </Box>
                         <Box display="flex" justifyContent="center" alignItems="center">
-                            <Link href="/about" color="inherit" style={{ margin: '0 20px' }}>
+                            <Link href="/about" style={linkStyle}>
                                 About Us
                             </Link>
-                            <Link href="/about" color="inherit" style={{ margin: '0 20px' }}>
+                            <Link href="/about" style={linkStyle}>
                                 Contact Us
                             </Link>
-                            <Link href="/privacy" color="inherit" style={{ margin: '0 20px' }}>
+                            <Link style={linkStyle}>
                                 Privacy Policy
                             </Link>
-                            <Link href="/terms" color="inherit" style={{ margin: '0 20px' }}>
+                            <Link style={linkStyle}>
                                 Terms and Conditions
                             </Link>
                         </Box>
@@ -48,26 +54,6 @@ const Footer = () => {
                                 style={socialMediaIconStyle}
                             >
                                 <FacebookIcon />
-                            </Button>
-                            <Button
-                                variant="text"
-                                color="inherit"
-                                href="https://www.twitter.com/youronlinestore"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={socialMediaIconStyle}
-                            >
-                                <TwitterIcon />
-                            </Button>
-                            <Button
-                                variant="text"
-                                color="inherit"
-                                href="https://www.linkedin.com/company/youronlinestore"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={socialMediaIconStyle}
-                            >
-                                <LinkedInIcon />
                             </Button>
                             <Button
                                 variant="text"

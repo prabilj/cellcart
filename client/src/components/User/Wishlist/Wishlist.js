@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { addToCartApi, removeFromWishlistApi } from '../../Api/Api';
 import axios from 'axios';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
+import { addToCartApi, removeFromWishlistApi } from '../../Api/Api';
 import NavigationBar from '../../nav/NavigationBar';
+import Footer from '../../Header/Footer';
 import './Wishlist.css';
 
 const Wishlist = () => {
@@ -69,6 +70,7 @@ const Wishlist = () => {
                     </ul>
                 )}
             </div>
+            <Footer style={{ position: "fixed", bottom: 0 }} />
         </>
     );
 };

@@ -166,8 +166,6 @@ const CheckoutPage = () => {
         }
     };
     const placeOrder = async (addressId, paymentMethod, productData) => {
-        //console.log("addressId", addressId);
-        //console.log("selectedAddress", selectedAddress);
         const finalData = {
             addressId,
             paymentMethod,

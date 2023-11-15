@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import Swal from 'sweetalert2';
 import { changePasswordApi } from '../../Api/Api';
 import './ResetPassword.css';
+import Footer from '../../Header/Footer';
 
 function ChangePassword() {
     // Validation schema for password reset
@@ -102,6 +103,7 @@ function ChangePassword() {
 
                 </div>
             </form>
+            <Footer/>
         </div>
     );
 }

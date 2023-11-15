@@ -3,25 +3,19 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import { displayProductsApi, displayUsersApi, displayOrderApi } from '../../Api/Api';
+import { PieChart } from '@mui/x-charts/PieChart';
 import moment from 'moment';
-import {
-    Card
-} from '@mui/material'
-import { PieChart } from '@mui/x-charts/PieChart'
-import Sidebar from '../Sidebar/Sidebar'; // Import your Sidebar component here
-import Footer from '../../Header/Footer';
+import { displayProductsApi, displayUsersApi, displayOrderApi } from '../../Api/Api';
+import Sidebar from '../Sidebar/Sidebar';
+import './Dashboard.css';
 
 const Dashboard = () => {
     const [totalProducts, setTotalProducts] = useState(0);
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalOrders, setTotalOrders] = useState(0);
     const [orders, setOrders] = useState([]);
-
-    const scrollContainerRef = useRef(null);
-
     const [orderStatusData, setOrderStatusData] = useState([]);
+    const scrollContainerRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -65,16 +59,17 @@ const Dashboard = () => {
     useEffect(() => {
         // Scroll to the bottom of the list when orders change (new orders added)
         scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+
     }, [orders]);
 
     return (
         <div>
             <Sidebar />
-            <div style={{ marginLeft: '260px', marginRight: '260px' }}>
+            <div className="dashboard-container">
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={4}>
                         <Paper className="dashboard-item" style={{ marginBottom: '20%' }}>
-                            <Link to="/products" style={{ textDecoration: 'none' }}>
+                            <Link to="/viewproducts" style={{ textDecoration: 'none' }}>
                                 <Typography variant="h5" component="div" color="primary">
                                     Total Products
                                 </Typography>
@@ -94,14 +89,12 @@ const Dashboard = () => {
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <Paper className="dashboard-item">
-                            <Card>
-                                <Link to="/orders" style={{ textDecoration: 'none' }}>
-                                    <Typography variant="h5" component="div" color="primary">
-                                        Total Orders
-                                    </Typography>
-                                </Link>
-                                <Typography variant="h6">{totalOrders}</Typography>
-                            </Card>
+                            <Link to="/orders" style={{ textDecoration: 'none' }}>
+                                <Typography variant="h5" component="div" color="primary">
+                                    Total Orders
+                                </Typography>
+                            </Link>
+                            <Typography variant="h6">{totalOrders}</Typography>
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={8}>
@@ -114,7 +107,7 @@ const Dashboard = () => {
                             <Typography variant="h5" component="div">
                                 Data Overview
                             </Typography>
-                            <div style={{ maxHeight: '400px', overflowY: 'auto' }} ref={scrollContainerRef}>
+                            <div className="scroll-container" ref={scrollContainerRef}>
                                 <ul>
                                     {orders.slice().reverse().map((order) => (
                                         <li key={order._id}>

@@ -6,6 +6,7 @@ import './UserProfile.css';
 import { useNavigate } from 'react-router-dom';
 import { getUserApi, updateUserApi } from '../../Api/Api'
 import Swal from 'sweetalert2';
+import Footer from '../../Header/Footer';
 
 const UserProfile = () => {
   const Navigate = useNavigate()
@@ -117,6 +118,7 @@ const UserProfile = () => {
           </div>
         </div>
       </form>
+      <Footer/>
     </div>
   );
 };

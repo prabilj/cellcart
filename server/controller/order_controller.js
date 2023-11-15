@@ -4,7 +4,7 @@ const createOrder = async (req, res) => {
     try {
         const { userId } = req.params
         const { totalAmount, orderDetails, paymentMethod, addressId } = req.body;
-       // console.log("orderDetails", orderDetails);
+        // console.log("orderDetails", orderDetails);
 
         const newOrder = new Order({
             userId,
@@ -43,8 +43,10 @@ const getOrders = async (req, res) => {
 }
 const getOrderById = async (req, res) => {
     try {
+        // console.log("inside the getorder");
+        //console.log(req.params);
         const { userId } = req.params
-        i
+
         const orders = await Order.find({ userId }).populate('orderDetails.productId')
         res.json({
             message: "Order retrieved successfully",
