@@ -5,10 +5,9 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { displayProductByIdApi, updateProductApi } from '../../Api/Api';
-import { Button, Container, TextField, Typography, Card, CardMedia, CardActions, Grid } from '@mui/material';
+import { Button, Container, TextField, Typography, Card, CardMedia, Grid, InputLabel } from '@mui/material';
 import './EditProduct.css';
 import Sidebar from '../Sidebar/Sidebar';
-import Footer from '../../Header/Footer';
 
 const EditProduct = () => {
     const { ProductId } = useParams();
@@ -28,6 +27,7 @@ const EditProduct = () => {
         Battery: yup.string().required('Product Battery is required'),
         Storage: yup.string().required('Product Storage is required'),
         productCount: yup.number().required('Count is required'),
+        brand: yup.string().required('brand required')
     });
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
@@ -50,6 +50,7 @@ const EditProduct = () => {
                 setValue('Battery', productData.Battery || '');
                 setValue('Storage', productData.Storage || '');
                 setValue('productCount', productData.productCount || 0);
+                setValue('brand', productData.brand)
                 setSelectedImage(productData.pimage);
             } catch (error) {
                 setError('Error fetching product data');
@@ -69,14 +70,11 @@ const EditProduct = () => {
                 data.pimage = imageUrl;
             }
             const response = await updateProductApi(ProductId, data);
-            if (response.status == 200) {
-
-
-                console.log("response---", response)
+            if (response.status === 200) {
+                console.log("response---", response);
                 alert('Product updated successfully');
-                navigate('/ViewProducts')
+                navigate('/ViewProducts');
             }
-
         } catch (error) {
             setError('Error updating product');
         } finally {
@@ -113,6 +111,7 @@ const EditProduct = () => {
                             <Typography variant="h4">Edit Product</Typography>
                             <div className="form-row">
                                 <div className="form-group">
+                                    <InputLabel htmlFor="productName">Product Name</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="productName"
@@ -124,6 +123,7 @@ const EditProduct = () => {
                                     />
                                 </div>
                                 <div className="form-group">
+                                    <InputLabel htmlFor="price">Product Price</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="price"
@@ -137,6 +137,7 @@ const EditProduct = () => {
                             </div>
                             <div className="form-row">
                                 <div className="form-group">
+                                    <InputLabel htmlFor="Description">Product Description</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="Description"
@@ -149,6 +150,7 @@ const EditProduct = () => {
                                     />
                                 </div>
                                 <div className="form-group">
+                                    <InputLabel htmlFor="Display">Product Display</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="Display"
@@ -161,6 +163,7 @@ const EditProduct = () => {
                             </div>
                             <div className="form-row">
                                 <div className="form-group">
+                                    <InputLabel htmlFor="Processor">Product Processor</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="Processor"
@@ -171,6 +174,7 @@ const EditProduct = () => {
                                     />
                                 </div>
                                 <div className="form-group">
+                                    <InputLabel htmlFor="Camera">Product Camera</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="Camera"
@@ -183,6 +187,7 @@ const EditProduct = () => {
                             </div>
                             <div className="form-row">
                                 <div className="form-group">
+                                    <InputLabel htmlFor="Battery">Product Battery</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="Battery"
@@ -193,6 +198,7 @@ const EditProduct = () => {
                                     />
                                 </div>
                                 <div className="form-group">
+                                    <InputLabel htmlFor="Storage">Product Storage</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="Storage"
@@ -205,6 +211,7 @@ const EditProduct = () => {
                             </div>
                             <div className="form-row">
                                 <div className="form-group">
+                                    <InputLabel htmlFor="productCount">Product Count</InputLabel>
                                     <TextField
                                         fullWidth
                                         id="productCount"
@@ -216,12 +223,31 @@ const EditProduct = () => {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <input
-                                        type="file"
-                                        id="productImage"
-                                        onChange={handleFileChange}
+                                    <InputLabel htmlFor="brand">Brand</InputLabel>
+                                    <TextField
+                                        fullWidth
+                                        id="productCount"
+                                        {...register('brand')}
+                                        placeholder="Brand"
+                                        error={!!errors.brand}
+                                        helperText={errors.brand?.message}
                                     />
                                 </div>
+
+                            </div>
+                            <div className="form-group">
+                                {/* <div className="upload-container"> */}
+                                <label htmlFor="productImage" className="upload-label">
+                                    Upload Image
+                                </label>
+                                <input
+                                    type="file"
+                                    id="productImage"
+                                    onChange={handleFileChange}
+                                    style={{ marginTop: '20px' }}
+
+                                />
+                                {/* </div> */}
                             </div>
                             {loading && <p>Loading...</p>}
                             {error && <p>Error: {error}</p>}
@@ -238,9 +264,10 @@ const EditProduct = () => {
                             )}
                             <Button
                                 variant="contained"
-                                color="primary"
+                                style={{ backgroundColor: '#563517', color: '#ffffff', marginTop: '20px' }}
                                 type="submit"
                                 disabled={loading}
+                               
                             >
                                 {loading ? 'Updating Product...' : 'Update Product'}
                             </Button>

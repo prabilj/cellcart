@@ -65,3 +65,25 @@
   .form-group {
     flex-basis: calc(50% - 8px); /* Adjust to make two items fit in one row */
   }  
+  /* Add this to your CSS file or style tag in your component */
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-label {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #563517; 
+  color: #fff; /* Change the text color as needed */
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Style for hiding the input */
+input[type="file"] {
+  display: none;
+}

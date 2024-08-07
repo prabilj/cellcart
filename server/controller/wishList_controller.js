@@ -1,10 +1,10 @@
 const Wishlist = require('../model/wishlistSchema');
+const jwt = require('jsonwebtoken');
+
 
 const addWishList = async (req, res) => {
     try {
         const { userId, productId } = req.body
-
-        console.log(req.body)
         const existingWishlistItem = await Wishlist.findOne({ userId: userId, productId: productId });
         console.log(existingWishlistItem)
         if (existingWishlistItem) {

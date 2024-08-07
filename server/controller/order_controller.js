@@ -24,23 +24,58 @@ const createOrder = async (req, res) => {
     }
 }
 const getOrders = async (req, res) => {
-    // console.log("heyyyy")
-
     try {
-        const orders = await Order.find({}).populate('orderDetails.productId').populate('userId')
-        // console.log(orders)
+        // Aggregate function to find which product has the most orders
+        const mostOrderedProduct = await Order.aggregate([
+            {
+                $unwind: "$orderDetails"
+            },
+            {
+                $group: {
+                    _id: "$orderDetails.productId",
+                    totalQuantity: { $sum: "$orderDetails.quantity" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productInfo"
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    totalQuantity: 1,
+                    productInfo: { $arrayElemAt: ["$productInfo", 0] }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    totalQuantity: 1,
+                    productName: "$productInfo.productName",
+                }
+            }
+        ]);
+
+        const orders = await Order.find({}).populate('orderDetails.productId').populate('userId');
 
         res.json({
             message: "Orders retrieved successfully",
             data: {
-                orders
+                orders,
+                mostOrderedProduct
             }
         });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "An error occurred while retrieving orders" });
     }
-}
+};
+
 const getOrderById = async (req, res) => {
     try {
         // console.log("inside the getorder");

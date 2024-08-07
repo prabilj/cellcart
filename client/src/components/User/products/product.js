@@ -20,7 +20,8 @@ import {
   DialogContent,
   DialogActions,
   Slider,
-  Pagination
+  Pagination,
+  Box
 } from '@mui/material';
 import NavigationBar from '../../nav/NavigationBar';
 
@@ -135,6 +136,7 @@ const ProductList = () => {
       <NavigationBar />
       <br />
       <div className="search-and-filters">
+
         <TextField
           label="Search by Name"
           value={searchQuery}
@@ -185,18 +187,35 @@ const ProductList = () => {
                 ))}
               </Select>
             </FormControl>
-            <Slider
-              value={[minPrice, maxPrice]}
-              onChange={(_, newValue) => {
-                setMinPrice(newValue[0]);
-                setMaxPrice(newValue[1]);
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="range-slider"
-              min={500}
-              max={10000}
-              style={{ marginBottom: '20px' }}
-            />
+            <Box display="flex" justifyContent="space-between" mb={2}>
+              <Box width="48%">
+                <InputLabel shrink={!!minPrice} style={{ color: '#563517' }}>
+                  Min Price
+                </InputLabel>
+                <TextField
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  variant="outlined"
+                  placeholder="Min Price"
+                  fullWidth
+                />
+              </Box>
+
+              <Box width="48%">
+                <InputLabel shrink={!!maxPrice} style={{ color: '#563517' }}>
+                  Max Price
+                </InputLabel>
+                <TextField
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  variant="outlined"
+                  placeholder="Max Price"
+                  fullWidth
+                />
+              </Box>
+            </Box>
             {/* Add more filter options as needed */}
           </DialogContent>
           <DialogActions style={{ padding: '15px' }}>
@@ -241,6 +260,13 @@ const ProductList = () => {
                   <Typography variant="h6" color="primary">
                     ${product.price}
                   </Typography>
+                  <span style={{ marginLeft: '10px' }}>
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <span key={index} style={{ color: '#ffd700', fontSize: '24px' }}>
+                       {index + 0.5 <= product.rating ? '★' : '☆'}
+                      </span>
+                    ))}
+                  </span>
                 </CardContent>
               </Link>
               <CardActions>
@@ -265,7 +291,7 @@ const ProductList = () => {
       </Grid>
 
       {/* Pagination */}
-      <div className="pagination"style={{ marginBottom: '20px' }}>
+      <div className="pagination" style={{ marginBottom: '20px' }}>
         <Pagination
           count={Math.ceil(products.length / productsPerPage)}
           page={currentPage}
@@ -274,7 +300,7 @@ const ProductList = () => {
           shape="rounded"
         />
       </div>
-      <Footer style={{ marginTop: '20px' }}/>
+      <Footer style={{ marginTop: '20px' }} />
     </>
   );
 };

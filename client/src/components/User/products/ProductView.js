@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NavigationBar from '../../nav/NavigationBar';
-import { Button } from '@mui/material';
+import { Button,CircularProgress } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addToCartApi } from '../../Api/Api';
 import { useAuth } from '../../contexts/AuthContexts'
-
 import Swal from 'sweetalert2'
 import './ProductView.css';
-import Loader from './Loader';
 import Footer from '../../Header/Footer';
 
 const ProductView = () => {
@@ -125,7 +123,7 @@ const ProductView = () => {
       <NavigationBar />
       <div className='view-container'>
         {loading ? (
-          <Loader />
+          <CircularProgress/>
         ) : (
           <>
             <div>

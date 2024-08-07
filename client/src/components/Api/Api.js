@@ -2,6 +2,7 @@ import axios from 'axios';
 import { relativeTimeRounding } from 'moment';
 const userId = localStorage.getItem('uId')
 const Email = localStorage.getItem('email')
+const Token = localStorage.getItem('userToken')
 const baseUrl = 'http://localhost:3000';
 
 
@@ -45,6 +46,7 @@ export const deleteManyFromCartApi = async (formData) => {
 
 
 export const displayCartApi = async () => {
+
   const response = await axios.get(`${baseUrl}/users/${userId}/carts`)
   console.log(response)
   return response.data.data.data
@@ -62,7 +64,8 @@ export const updateQuantityApi = async (itemId, newQuantity) => {
 export const addToWishlistApi = (productId) => {
   const formData = {
     userId: userId,
-    productId: productId
+    productId: productId,
+    token :Token
   }
   return axios.post(`${baseUrl}/users/wishlist`, formData);
 };

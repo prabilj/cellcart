@@ -1,16 +1,16 @@
 import React from 'react';
-import { Link,useNavigate , useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Swal from 'sweetalert2';
-import { resetPasswordApi } from '../../Api/Api'; 
+import { resetPasswordApi } from '../../Api/Api';
 import './ResetPassword.css';
 import Footer from '../../Header/Footer';
 
 function ResetPassword() {
     // Validation schema for password reset
-    const location = useLocation();                                                    
+    const location = useLocation();
     const navigate = useNavigate();
     const { email } = location.state || {};
     const Email = email;
@@ -56,39 +56,42 @@ function ResetPassword() {
     };
 
     return (
-        <div className="reset-password-container">
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <h2>Reset Password</h2>
-                <div className="reset-password-form">
-                    {/* Input fields for password reset */}
-                    <input
-                        type="password"
-                        placeholder="New Password"
-                        {...register('newPassword')}
-                    />
-                    <div className="errors-message">
-                        <p>{errors.newPassword?.message}</p>
-                    </div>
+        <>
+            <div className="reset-password-container">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <h2>Reset Password</h2>
+                    <div className="reset-password-form">
+                        {/* Input fields for password reset */}
+                        <input
+                            type="password"
+                            placeholder="New Password"
+                            {...register('newPassword')}
+                        />
+                        <div className="errors-message">
+                            <p>{errors.newPassword?.message}</p>
+                        </div>
 
-                    <input
-                        type="password"
-                        placeholder="Confirm Password"
-                        {...register('confirmPassword')}
-                    />
-                    <div className="errors-message">
-                        <p>{errors.confirmPassword?.message}</p>
-                    </div>
+                        <input
+                            type="password"
+                            placeholder="Confirm Password"
+                            {...register('confirmPassword')}
+                        />
+                        <div className="errors-message">
+                            <p>{errors.confirmPassword?.message}</p>
+                        </div>
 
-                    <div className="btn-div">
-                        <button type="submit">Reset Password</button>
+                        <div className="btn-div">
+                            <button type="submit">Reset Password</button>
+                        </div>
+                        <p>
+                            Remember your password? <Link to="/login">Login</Link>
+                        </p>
                     </div>
-                    <p>
-                        Remember your password? <Link to="/login">Login</Link>
-                    </p>
-                </div>
-            </form>
-            <Footer/>
-        </div>
+                </form>
+
+            </div>
+            <Footer />
+        </>
     );
 }
 

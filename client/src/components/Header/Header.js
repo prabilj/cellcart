@@ -28,9 +28,6 @@ const Header = () => {
                         </Typography>
                     </Link>
                 </HeaderBox>
-                <div style={{ marginLeft: 'auto' }}>
-                    <Avatar alt="User" src="/path/to/user-avatar.jpg" />
-                </div>
             </Toolbar>
         </Headerr>
     );

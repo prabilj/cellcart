@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import { PieChart } from '@mui/x-charts/PieChart';
+import { PieChart, BarChart, LineChart } from '@mui/x-charts';
 import moment from 'moment';
 import { displayProductsApi, displayUsersApi, displayOrderApi } from '../../Api/Api';
 import Sidebar from '../Sidebar/Sidebar';
@@ -16,6 +16,7 @@ const Dashboard = () => {
     const [orders, setOrders] = useState([]);
     const [orderStatusData, setOrderStatusData] = useState([]);
     const scrollContainerRef = useRef(null);
+    const [chartData, setChartData] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,6 +28,20 @@ const Dashboard = () => {
                 setTotalProducts(productsResponse.data.data.length);
                 setTotalUsers(usersResponse.data.data.data.length);
                 setTotalOrders(ordersResponse.data.data.orders.length);
+                console.log("ordersResponse.data.data", ordersResponse.data.data.mostOrderedProduct);
+                const mostOrderedProduct = ordersResponse.data.data.mostOrderedProduct;
+
+                const xAxisData = mostOrderedProduct.map(item => item.productName)
+
+                //console.log(xAxisData);
+
+                // console.log("xAxisData", xAxisData);
+                const seriesData = mostOrderedProduct.map(item => item.totalQuantity);
+                console.log("seriesData", seriesData);
+                setChartData({
+                    xAxis: xAxisData,
+                    series: seriesData
+                });
 
                 const sortedOrders = ordersResponse.data.data.orders.sort((a, b) => {
                     return new Date(a.createdAt) - new Date(b.createdAt);
@@ -51,11 +66,12 @@ const Dashboard = () => {
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
+
         };
 
         fetchData();
     }, []);
-
+    console.log("chartData", chartData);
     useEffect(() => {
         // Scroll to the bottom of the list when orders change (new orders added)
         scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
@@ -102,6 +118,21 @@ const Dashboard = () => {
                             <PieChart series={[{ data: orderStatusData }]} width={400} height={200} />
                         </Paper>
                     </Grid>
+                    {chartData && (
+                        <div>
+                            <p>X-axis before mapping: {JSON.stringify(chartData.xAxis)}</p>
+                            <LineChart
+                                xAxis={[{ data: chartData.xAxis}]}
+                                series={[
+                                    {
+                                        data: chartData.series,
+                                    },
+                                ]}
+                                width={500}
+                                height={300}
+                            />
+                        </div>
+                    )}
                     <Grid item xs={12} sm={4}>
                         <Paper className="dashboard-item" style={{ marginRight: '20%' }}>
                             <Typography variant="h5" component="div">

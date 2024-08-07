@@ -63,6 +63,7 @@ function ChangePassword() {
     };
 
     return (
+        <>
         <div className="reset-password-container">
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -103,8 +104,10 @@ function ChangePassword() {
 
                 </div>
             </form>
-            <Footer/>
+           
         </div>
+         <Footer/>
+         </>
     );
 }
 

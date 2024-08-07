@@ -76,6 +76,10 @@ app.get('/users/address/:userId', Address.getAddress)
 app.delete('/users/address/:_id', Address.removeAddress)
 
 
+app.get('/',(req, res)=>{
+  res.send("backend sucessful")
+})
+
 app.listen(3000, () => {
   console.log('Server started on port 3000');
 });

@@ -17,7 +17,7 @@ const userLogIn = async (request, response) => {
 
                 if (isPasswordValid) {
                     const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '1h' });
-                    console.log('login sucess')
+                    //console.log('login sucess')
                     return response.status(200).json({
                         message: `${user.username} login successful`,
                         token: token,
@@ -112,7 +112,6 @@ const userLogOut = (request, response) => {
 const displayUser = async (request, response) => {
 
     try {
-        // console.log("inside display user api")
         const display = await User.find();
         response.status(201).json({
             message: "users data",
@@ -132,7 +131,7 @@ const displayUser = async (request, response) => {
 const getUser = async (request, response) => {
     try {
         const display = await User.findOne({ _id: request.params._id });
-        console.log(request.params._id)
+       // console.log(request.params._id)
 
         if (display) {
             response.status(200).json({
@@ -153,7 +152,6 @@ const updateUser = async (req, res) => {
         const userId = req.params._id;
         console.log(userId)
         const data = req.body
-        //console.log("request", req.body)
         const updateFields = {};
 
 
@@ -235,7 +233,6 @@ const resetPassword = async (req, res) => {
     try {
         const { email, newPassword } = req.body;
 
-        // Find the user by email
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -264,9 +261,7 @@ const resetPassword = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        // console.log(req.body)
         const user = await User.findOne({ email: req.body.email });
-        //console.log(user)
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }

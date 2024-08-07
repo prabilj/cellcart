@@ -77,10 +77,9 @@ const deleteManyFromCart = async (req, res) => {
 
 
 const displayCart = async (request, response) => {
-
     try {
         const userId = request.params.userId;
-        console.log(userId);
+        //console.log(userId);
         const cartItems = await Cart.find({ userId: userId }).populate('productId');
         response.status(200).json({
             data: {
