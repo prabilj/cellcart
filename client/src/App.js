@@ -38,8 +38,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/signup" element={<Signup />} /> */}
-        {/* <Route path='/verifyOTP' element={<OTPVerification />} /> */}
+        <Route path="/signup" element={<Signup />} />
+        <Route path='/verifyOTP' element={<OTPVerification />} />
         <Route path='/emailEnter' element={<EnterEmail />} />
 
         <Route path='/resetpassword' element={<ResetPassword />} />
