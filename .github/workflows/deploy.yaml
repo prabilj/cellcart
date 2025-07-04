@@ -1,0 +1,30 @@
+name: Deploy Cellcart to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 54.196.184.196 >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2 and restart Docker
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@54.196.184.196 << 'EOF'
+            cd /home/ec2-user/cellcart
+            git pull origin main
+            docker compose --env-file .env pull || true
+            docker compose --env-file .env up --build -d
+          EOF
