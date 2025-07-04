@@ -8,7 +8,7 @@ import Login from './components/User/Login/login';
 import Signup from './components/User/Signup/Signup';
 import OTPVerification from './components/User/Verification/OTPVerification';
 import EnterEmail from './components/User/Verification/EnterEmail';
-import ProductList from './components/User/products/product';
+// import ProductList from './components/User/products/product';
 import { PrivateRoutes, AdminPrivateRoutes } from './components/protectedRoutes/PrivateRoutes'
 import ProductView from './components/User/products/ProductView';
 import Wishlist from './components/User/Wishlist/Wishlist';
