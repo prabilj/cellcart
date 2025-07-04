@@ -3,11 +3,11 @@ name: Deploy Cellcart to EC2
 on:
   push:
     branches:
-      - main
+      - main  # Ensure you're pushing to this branch
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
@@ -20,11 +20,12 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 54.196.184.196 >> ~/.ssh/known_hosts
 
-      - name: Deploy to EC2 and restart Docker
+      - name: Deploy to EC2 and Restart Docker
         run: |
           ssh -i ~/.ssh/id_rsa ec2-user@54.196.184.196 << 'EOF'
             cd /home/ec2-user/cellcart
-            git pull origin main
-            docker compose --env-file .env pull || true
+            git config --global --add safe.directory /home/ec2-user/cellcart
+            git fetch origin main
+            git reset --hard origin/main
             docker compose --env-file .env up --build -d
           EOF
