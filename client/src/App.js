@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Login from './components/User/Login/login';
-import Signup from './components/User/Signup/Signup';
+// import Signup from './components/User/Signup/Signup';
 import OTPVerification from './components/User/Verification/OTPVerification';
 import EnterEmail from './components/User/Verification/EnterEmail';
 import ProductList from './components/User/products/product';
