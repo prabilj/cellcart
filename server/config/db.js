@@ -4,7 +4,8 @@ dotenv.config();
 const username=process.env.DB_USERNAME
 const password=process.env.DB_PASSWORD
 
-const dbURI = `mongodb+srv://${username}:${password}@cluster0.08tziw5.mongodb.net/myCart`
+
+const dbURI =  `mongodb+srv://${username}:${password}@cluster0.a95m98d.mongodb.net/myCart?retryWrites=true&w=majority&appName=Cluster0`
 
 
 mongoose.connect(dbURI, {

@@ -76,8 +76,8 @@ const userSignUp = async (request, response) => {
             const user = request.body;
             const email = user.email
 
-            otp = await sendOTP({ email: email })
-            user.otp = otp
+            // otp = await sendOTP({ email: email })
+            user.otp = 123456
             const newUser = new User(user);
             await newUser.save();
             console.log(newUser)

@@ -3,8 +3,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const User = require('../model/userSchema');
-const Email = process.env.EMAIL;
-const Password = process.env.EMAIL_PASS;
+// const Email = process.env.EMAIL;
+// const Password = process.env.EMAIL_PASS;/
+
+const Email = "prabil.jayaprakash@gmail.com"
+const Password = "Prabil@9154"
 
 // Send OTP to user's email
 const sendOTP = async (req, res) => {

@@ -44,7 +44,7 @@ const Login = () => {
                 localStorage.setItem('isadmin', response.data.Data.isadmin);
                 if (response.status === 200) {
                     if (response.data.Data.isadmin) {
-                        navigate('/dashboard');
+                        navigate('/ViewProducts');
                     }
                     else {
                         console.log("client side");
