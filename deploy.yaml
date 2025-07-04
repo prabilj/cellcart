@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy to EC2 and run Docker
         run: |
-          ssh -i ~/.ssh/id_rsa ec2-user@YOUR_EC2_PUBLIC_IP << 'EOF'
+          ssh -i ~/.ssh/id_rsa ec2-user@35.172.225.209 << 'EOF'
             cd /home/ec2-user/cellcart
             git pull origin main
             docker compose --env-file .env up --build -d
