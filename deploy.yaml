@@ -3,7 +3,7 @@ name: Deploy Cellcart to EC2
 on:
   push:
     branches:
-      - main  # Change if you're using a different branch
+      - main  # Make sure you're pushing to this branch
 
 jobs:
   deploy:
@@ -13,14 +13,14 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Setup SSH key
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 35.172.225.209 >> ~/.ssh/known_hosts
 
-      - name: Deploy and restart Docker containers on EC2
+      - name: Deploy to EC2 and Restart Docker
         run: |
           ssh -i ~/.ssh/id_rsa ec2-user@35.172.225.209 << 'EOF'
             cd /home/ec2-user/cellcart
