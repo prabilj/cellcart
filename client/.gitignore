@@ -21,17 +21,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# terraform
-# Ignore Terraform state files
-*.tfstate
-*.tfstate.backup
-
-# Ignore crash logs
-crash.log
-
-# Ignore Terraform modules and providers
-.terraform/
-
-# Ignore lock file (optional)
-.terraform.lock.hcl
