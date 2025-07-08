@@ -18,11 +18,11 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 54.82.45.203 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 3.208.1.55 >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2 and Restart Docker
         run: |
-          ssh -i ~/.ssh/id_rsa ec2-user@54.82.45.203 << 'EOF'
+          ssh -i ~/.ssh/id_rsa ec2-user@3.208.1.55 << 'EOF'
             cd /home/ec2-user/cellcart
             git config --global --add safe.directory /home/ec2-user/cellcart
             git fetch origin main
