@@ -1,14 +1,18 @@
 pipeline {
   agent any
 
+  environment {
+    DOCKER_BUILDKIT = 1
+  }
+
   stages {
-    stage('Clone Repo') {
+    stage('Clone Repository') {
       steps {
         git 'https://github.com/prabilj/cellcart.git'
       }
     }
 
-    stage('Docker Build & Deploy') {
+    stage('Build & Deploy Docker') {
       steps {
         sh 'docker-compose down'
         sh 'docker-compose up -d --build'
