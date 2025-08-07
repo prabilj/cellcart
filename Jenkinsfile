@@ -14,8 +14,16 @@ pipeline {
 
     stage('Build & Deploy Docker') {
       steps {
-        sh 'docker-compose down'
-        sh 'docker-compose up -d --build'
+        dir('cellcart') {
+          script {
+            try {
+              sh 'docker-compose down'
+              sh 'docker-compose up -d --build'
+            } catch (Exception e) {
+              error "Docker build failed: ${e.getMessage()}"
+            }
+          }
+        }
       }
     }
   }
